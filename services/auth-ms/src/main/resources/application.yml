@@ -1,0 +1,25 @@
+spring:
+  rabbitmq:
+    username: user
+    password: root
+    host: localhost
+    port: 5672
+    virtual-host: /
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1000ms
+          multiplier: 2.0
+          max-interval: 10000ms
+        default-requeue-rejected: false
+        acknowledge-mode: manual
+  application:
+    name: auth-ms
+  cloud:
+    config:
+      uri: http://localhost:5000
+      fail-fast: true
+  config:
+    import: "configserver:"

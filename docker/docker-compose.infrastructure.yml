@@ -1,0 +1,56 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres-sueta-rnd-container
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      PGDATA: /data/postgres
+    networks:
+      - sueta-rnd-helper
+    volumes:
+      - postgres-sueta-rnd-volume:/data/postgres
+      - ../scripts/db-initializer.sh:/usr/local/bin/db-initializer.sh
+      - ../scripts/custom-db-entrypoint.sh:/custom-db-entrypoint.sh
+    entrypoint: /custom-db-entrypoint.sh
+    restart: unless-stopped
+
+  vault:
+    image: hashicorp/vault:1.19
+    container_name: vault-sueta-rnd-container
+    ports:
+      - "8200:8200"
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: myroot
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+    networks:
+      - sueta-rnd-helper
+    volumes:
+      - ../scripts/vault-initializer.sh:/usr/local/bin/vault-initializer.sh
+      - ../scripts/custom-vault-entrypoint.sh:/custom-vault-entrypoint.sh
+    entrypoint: /custom-vault-entrypoint.sh
+
+  minio:
+    image: minio/minio
+    container_name: minio-sueta-rnd-container
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=root1234
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio-sueta-rnd-volume:/data
+    networks:
+      - sueta-rnd-helper
+      -
+networks:
+  sueta-rnd-helper:
+    external: true
+volumes:
+  postgres-ci-trainee-volume:
+  minio-ci-trainee-volume:
+  rabbitmq-ci-trainee-volume:

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/services/auth-ms/build/resources/main/db/changelog/changesets/V1__create_table.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/services/auth-ms/build/resources/main/db/changelog/changesets/V2__insert_test_data.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/services/auth-ms/build/resources/main/preliquibase/postgresql.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/services/auth-ms/src/main/resources/db/changelog/changesets/V1__create_table.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/services/auth-ms/src/main/resources/db/changelog/changesets/V2__insert_test_data.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/services/auth-ms/src/main/resources/preliquibase/postgresql.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/services/profile-ms/build/resources/main/db/changelog/changesets/V1__create_table.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/services/profile-ms/build/resources/main/db/changelog/changesets/V2__insert_test_data.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/services/profile-ms/build/resources/main/preliquibase/postgresql.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/services/profile-ms/src/main/resources/db/changelog/changesets/V1__create_table.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/services/profile-ms/src/main/resources/db/changelog/changesets/V2__insert_test_data.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/services/profile-ms/src/main/resources/preliquibase/postgresql.sql" dialect="PostgreSQL" />
+  </component>
+</project>

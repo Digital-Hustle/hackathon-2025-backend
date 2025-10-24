@@ -1,0 +1,20 @@
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            # Auth paths
+            - id: auth-service-api
+              uri: http://auth-ms:4000
+              predicates:
+                - Path=/auth/api/v1/**
+              filters:
+                - RewritePath=/auth/api/v1/(?<path>.*), /api/v1/$\{path}
+
+            - id: profile-service-api
+              uri: http://profile-ms:4001
+              predicates:
+                - Path=/profile/api/v1/**
+              filters:
+                - RewritePath=/profile/api/v1/(?<path>.*), /api/v1/$\{path}
