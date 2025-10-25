@@ -15,8 +15,8 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CategoryDto {
     @NotNull(message = "Id can't be null")
-    private UUID categoryId;
+    private UUID id;
 
     @NotNull(message = "Category type can't be null")
-    private CategoryType categoryType;
+    private CategoryType name;
 }

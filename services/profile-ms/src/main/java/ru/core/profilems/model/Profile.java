@@ -28,7 +28,7 @@ public class Profile {
     private String surname;
 
     @Column(name = "date_of_birth", nullable = false)
-    private LocalDate birthDate;
+    private LocalDate dateOfBirth;
 
     @Column(name = "image")
     private String image;

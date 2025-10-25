@@ -1,4 +1,4 @@
-INSERT INTO category (id, name)
+INSERT INTO profile_db.profile.category (id, name)
 VALUES  ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'CULTURE'),
         ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', 'SHOPPING'),
         ('c2eebc99-9c0b-4ef8-bb6d-6bb9bd380a13', 'NATURE'),

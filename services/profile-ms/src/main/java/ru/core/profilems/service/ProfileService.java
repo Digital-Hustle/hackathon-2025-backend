@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.core.profilems.dto.CurrentUser;
 import ru.core.profilems.dto.request.SearchParametersRq;
-import ru.core.profilems.enums.CategoryType;
 import ru.core.profilems.exception.exception.PageNotFound;
 import ru.core.profilems.exception.exception.ProfileNotFoundException;
 import ru.core.profilems.model.Category;
@@ -17,7 +16,6 @@ import ru.core.profilems.repository.ProfileRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiFunction;
 
@@ -79,7 +77,7 @@ public class ProfileService {
 
         existedProfile.setName(profile.getName());
         existedProfile.setSurname(profile.getSurname());
-        existedProfile.setBirthDate(profile.getBirthDate());
+        existedProfile.setDateOfBirth(profile.getDateOfBirth());
 
         return profileRepository.save(existedProfile);
     }

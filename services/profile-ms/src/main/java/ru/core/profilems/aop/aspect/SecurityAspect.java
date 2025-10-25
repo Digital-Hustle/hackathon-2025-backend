@@ -23,19 +23,6 @@ import java.util.UUID;
 public class SecurityAspect {
     private final CurrentUser currentUser;
 
-    @Around("@annotation(hasRole)")
-    public Object checkRole(ProceedingJoinPoint joinPoint, HasRole hasRole) throws Throwable {
-        Role requiredRole = hasRole.value();
-
-        if (!currentUser.hasRole(requiredRole)) {
-            log.warn("Access denied for user {}. Required role: {}",
-                    currentUser.getUsername(), requiredRole);
-            throw new AccessDeniedException("Access denied");
-        }
-
-        return joinPoint.proceed();
-    }
-
     @Around("@annotation(checkOwnership)")
     public Object checkOwnership(ProceedingJoinPoint joinPoint, CheckProfileOwnership checkOwnership) throws Throwable {
         UUID profileId = extractProfileIdFromArgs(joinPoint, checkOwnership.profileIdParam());
@@ -51,11 +38,6 @@ public class SecurityAspect {
 
     @Around("@annotation(hasPermission)")
     public Object checkPermission(ProceedingJoinPoint joinPoint, HasPermission hasPermission) throws Throwable {
-        if (currentUser.hasRole(Role.ROLE_ADMIN)) {
-            log.debug("Admin access granted for user: {}", currentUser.getUsername());
-            return joinPoint.proceed();
-        }
-
         UUID profileId = extractProfileIdFromArgs(joinPoint, hasPermission.profileIdParam());
 
         if (isProfileOwner(profileId)) {

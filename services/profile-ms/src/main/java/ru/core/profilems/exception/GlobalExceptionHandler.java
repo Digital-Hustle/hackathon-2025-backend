@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@ControllerAdvice
+//@ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -62,7 +62,8 @@ public class GlobalExceptionHandler {
                 .path(request.getRequestURI())
                 .timestamp(LocalDateTime.now())
                 .build();
-
+        System.out.println("tyta");
+        System.out.println("request:" + request);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(exceptionResponse);
