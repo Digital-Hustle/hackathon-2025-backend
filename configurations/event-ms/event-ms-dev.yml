@@ -1,5 +1,5 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/event_db?currentSchema=event
+    url: jdbc:postgresql://localhost:5433/event_db?currentSchema=event
     username: postgres
     password: root
