@@ -16,7 +16,7 @@ import java.util.Map;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Exception response")
-public class ExceptionResponse {
+public class ExceptionRs {
     @Schema(description = "Status code", example = "400", type = "int")
     private int status;
     @Schema(description = "Error", example = "Bad request", type = "String")

@@ -18,7 +18,7 @@ import java.util.List;
         "curPage", "pageSize"
 })
 @Schema(description = "Page response")
-public class PageResponse<T> {
+public class PageRs<T> {
 
     @Schema(description = "Page content. List of objects", type = "List")
     private List<T> content;

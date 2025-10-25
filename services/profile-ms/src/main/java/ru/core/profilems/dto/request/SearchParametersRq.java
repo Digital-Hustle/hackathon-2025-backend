@@ -6,7 +6,7 @@ import org.springframework.data.domain.PageRequest;
 
 @Data
 @Builder
-public class SearchParameters {
+public class SearchParametersRq {
     private String query;
     private boolean ignoreCase;
     private Integer page;

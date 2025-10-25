@@ -1,4 +1,4 @@
-INSERT INTO profile_db.profile_dev.profile (id, name, surname, age)
+INSERT INTO profile_db.profile.profile (id, name, surname, age)
 VALUES ('5bc388a6-f95d-459d-b5b5-51b63e01c533', 'Иван', 'Иванов', 25),
        ('8b62d449-4312-48ed-82ef-f9754ca4858b', 'Мария', 'Петрова', 30),
        ('21fabe35-28cc-41f5-be18-d08bc97cb584', 'Алексей', 'Сидоров', 22),

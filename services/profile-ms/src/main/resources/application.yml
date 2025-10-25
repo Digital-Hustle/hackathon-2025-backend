@@ -1,24 +1,4 @@
 spring:
-
-
-  rabbitmq:
-    username: user
-    password: root
-    host: localhost
-    port: 5672
-    virtual-host: /
-    template:
-      exchange: my.exchange
-      mandatory: true
-    listener:
-      simple:
-        retry:
-          enabled: true
-          max-attempts: 3
-          initial-interval: 1000
-    publisher-confirm-type: correlated
-    publisher-returns: true
-
   application:
     name: profile-ms
   cloud:

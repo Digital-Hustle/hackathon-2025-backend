@@ -6,12 +6,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.core.profilems.dto.CurrentUser;
-import ru.core.profilems.dto.request.SearchParameters;
+import ru.core.profilems.dto.request.SearchParametersRq;
+import ru.core.profilems.enums.CategoryType;
 import ru.core.profilems.exception.exception.PageNotFound;
 import ru.core.profilems.exception.exception.ProfileNotFoundException;
+import ru.core.profilems.model.Category;
 import ru.core.profilems.model.Profile;
+import ru.core.profilems.repository.CategoryRepository;
 import ru.core.profilems.repository.ProfileRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiFunction;
 
@@ -20,6 +26,7 @@ import java.util.function.BiFunction;
 @Transactional(readOnly = true)
 public class ProfileService {
     private final ProfileRepository profileRepository;
+    private final CategoryRepository categoryRepository;
     private final CurrentUser currentUser;
 
     public Page<Profile> getAllProfiles(Integer page, Integer size) {
@@ -30,19 +37,26 @@ public class ProfileService {
         return pageEntity;
     }
 
-    public Page<Profile> search(SearchParameters searchParameters) {
-        BiFunction<String, PageRequest, Page<Profile>> method = searchParameters.isIgnoreCase() ?
+    public Page<Profile> search(SearchParametersRq searchParametersRq) {
+        BiFunction<String, PageRequest, Page<Profile>> method = searchParametersRq.isIgnoreCase() ?
                 profileRepository::searchAnywhereInNameOrSurnameIgnoreCase :
                 profileRepository::searchAnywhereInNameOrSurname;
 
-        var pageEntity = method.apply(searchParameters.getQuery(), searchParameters.getPageRequest());
-        if (pageEntity.getTotalPages() < searchParameters.getPage()) throw new PageNotFound("Such page does not exist");
+        var pageEntity = method.apply(searchParametersRq.getQuery(), searchParametersRq.getPageRequest());
+        if (pageEntity.getTotalPages() < searchParametersRq.getPage()) throw new PageNotFound("Such page does not exist");
 
         return pageEntity;
     }
 
     public Profile getProfile(UUID profileId) {
         return profileRepository.findById(profileId).orElseThrow(ProfileNotFoundException::new);
+    }
+
+    public List<Category> getCategoriesByProfileId(UUID profileId) {
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(ProfileNotFoundException::new);
+
+        return new ArrayList<>(profile.getCategories());
     }
 
     @Transactional
@@ -65,7 +79,7 @@ public class ProfileService {
 
         existedProfile.setName(profile.getName());
         existedProfile.setSurname(profile.getSurname());
-        existedProfile.setAge(profile.getAge());
+        existedProfile.setBirthDate(profile.getBirthDate());
 
         return profileRepository.save(existedProfile);
     }

@@ -12,8 +12,8 @@ import ru.core.profilems.aop.annotation.HasRole;
 import ru.core.profilems.aop.annotation.CheckProfileOwnership;
 import ru.core.profilems.dto.ProfileDto;
 import ru.core.profilems.dto.Role;
-import ru.core.profilems.dto.request.SearchParameters;
-import ru.core.profilems.dto.response.PageResponse;
+import ru.core.profilems.dto.request.SearchParametersRq;
+import ru.core.profilems.dto.response.PageRs;
 import ru.core.profilems.mapper.ProfileMapper;
 import ru.core.profilems.model.Profile;
 import ru.core.profilems.service.ProfileService;
@@ -34,9 +34,8 @@ public class ProfileControllerImpl implements ProfileController {
     private final ProfileMapper profileMapper;
 
     @GetMapping
-    @HasRole(Role.ROLE_ADMIN)
     @Override
-    public ResponseEntity<PageResponse<ProfileDto>> getProfiles(
+    public ResponseEntity<PageRs<ProfileDto>> getProfiles(
             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "5") Integer size
     ) {
@@ -47,15 +46,14 @@ public class ProfileControllerImpl implements ProfileController {
     }
 
     @GetMapping("/search")
-    @HasRole(Role.ROLE_ADMIN)
     @Override
-    public ResponseEntity<PageResponse<ProfileDto>> searchProfiles(
+    public ResponseEntity<PageRs<ProfileDto>> searchProfiles(
             @RequestParam("query") String query,
             @RequestParam(value = "ignoreCase", required = false, defaultValue = "false") boolean ignoreCase,
             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "5") Integer size
     ) {
-        var searchParams = SearchParameters.builder()
+        var searchParams = SearchParametersRq.builder()
                 .query(query)
                 .ignoreCase(ignoreCase)
                 .page(page)
@@ -110,10 +108,10 @@ public class ProfileControllerImpl implements ProfileController {
         return ResponseEntity.noContent().build();
     }
 
-    private <T, R> PageResponse<R> toPageResponse(Page<T> pageEntity, Function<T, R> mapper) {
+    private <T, R> PageRs<R> toPageResponse(Page<T> pageEntity, Function<T, R> mapper) {
         List<R> profiles = pageEntity.getContent().stream().map(mapper).toList();
 
-        return PageResponse.<R>builder()
+        return PageRs.<R>builder()
                 .content(profiles)
                 .totalPages(pageEntity.getTotalPages())
                 .totalElements(pageEntity.getTotalElements())
