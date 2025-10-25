@@ -7,7 +7,7 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/DanyaChetvyrtov/TraineeHelper.git
+          uri: https://github.com/Digital-Hustle/hackathon-2025-backend
           search-paths: configurations/{application}
           order: 1
         vault:

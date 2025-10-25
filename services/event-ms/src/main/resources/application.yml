@@ -11,9 +11,3 @@ spring:
   liquibase:
     change-log: db/changelog/db.changelog-master.yml
 
-
-  datasource:
-    url: jdbc:postgresql://localhost:5432/event_db?currentSchema=event
-    username: postgres
-    password: root
-
