@@ -3,7 +3,7 @@ package ru.ci_trainee.routes_service.service.client;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import ru.ci_trainee.routes_service.dto.PlacesRs;
+import ru.ci_trainee.routes_service.dto.response.PlacesRs;
 import ru.ci_trainee.routes_service.dto.searchEvents.SearchPlacesDto;
 
 @FeignClient(

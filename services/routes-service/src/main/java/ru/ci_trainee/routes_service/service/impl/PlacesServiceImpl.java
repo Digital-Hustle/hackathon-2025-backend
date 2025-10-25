@@ -2,7 +2,7 @@ package ru.ci_trainee.routes_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.ci_trainee.routes_service.dto.PlacesRs;
+import ru.ci_trainee.routes_service.dto.response.PlacesRs;
 import ru.ci_trainee.routes_service.dto.route.RouteRequest;
 import ru.ci_trainee.routes_service.dto.searchEvents.SearchPlacesDto;
 import ru.ci_trainee.routes_service.model.Util.Point;

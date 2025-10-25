@@ -17,18 +17,14 @@ import java.util.UUID;
 public class Route {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
     private UUID id;
 
-    @Column
-    private UUID event_id;
+    @Column(name = "place_id")
+    private UUID placeId;
 
-    @Column
-    private UUID place_id;
-
-    @Column
-    private UUID profile_id;
+    @Column(name = "profile_id")
+    private UUID profileId;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

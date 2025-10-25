@@ -21,4 +21,6 @@ public class RouteRequest {
     private String style;
 
     private List<Category> categories;
+
+    private String routeLength;
 }

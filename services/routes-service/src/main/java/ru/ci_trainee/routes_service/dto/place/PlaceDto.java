@@ -26,7 +26,5 @@ public class PlaceDto {
 
     private String image;
 
-    private Category category;
-
     private List<EventDto> events;
 }
