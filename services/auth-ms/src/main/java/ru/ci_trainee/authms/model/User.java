@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "auth_users", schema = "auth_user_dev")
+@Table(name = "auth_users", schema = "auth_user")
 @Data
 @Builder
 @AllArgsConstructor
