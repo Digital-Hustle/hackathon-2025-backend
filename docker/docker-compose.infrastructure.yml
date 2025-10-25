@@ -46,11 +46,11 @@ services:
       - minio-sueta-rnd-volume:/data
     networks:
       - sueta-rnd-helper
-      -
+
 networks:
   sueta-rnd-helper:
     external: true
 volumes:
-  postgres-ci-trainee-volume:
-  minio-ci-trainee-volume:
-  rabbitmq-ci-trainee-volume:
+  postgres-sueta-rnd-volume:
+  minio-sueta-rnd-volume:
+  rabbitmq-sueta-rnd-volume:
