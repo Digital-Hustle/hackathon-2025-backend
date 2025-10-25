@@ -13,7 +13,7 @@ spring:
     enabled: false
 
 server:
-  port: 8080
+  port: 4003
 
 logging:
   level:
