@@ -7,6 +7,5 @@ CREATE TABLE places
     latitude  DECIMAL(10, 8) NOT NULL,
     longitude DECIMAL(11, 8) NOT NULL,
     address   TEXT,
-    image     VARCHAR(500),
-    category  VARCHAR(100)
+    image     VARCHAR(500)
 );

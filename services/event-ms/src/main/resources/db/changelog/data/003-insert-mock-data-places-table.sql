@@ -1,18 +1,17 @@
-INSERT INTO places (id, title, type, latitude, longitude, address, image, category)
+INSERT INTO places (id, title, type, latitude, longitude, address, image)
 VALUES ('550e8400-e29b-41d4-a716-446655440001', 'Красная площадь', 'landmark', 55.7539300, 37.6207950,
-        'Красная площадь, 1, Москва', 'https://example.com/krasnaya_ploshad.jpg', 'HISTORICAL'),
+        'Красная площадь, 1, Москва', 'https://example.com/krasnaya_ploshad.jpg'),
        ('550e8400-e29b-41d4-a716-446655440002', 'Большой театр', 'theater', 55.7602000, 37.6186000,
-        'Театральная площадь, 1, Москва', 'https://example.com/bolshoi_teatr.jpg', 'CULTURE'),
+        'Театральная площадь, 1, Москва', 'https://example.com/bolshoi_teatr.jpg'),
        ('550e8400-e29b-41d4-a716-446655440003', 'Парк Горького', 'park', 55.7288000, 37.6013000,
-        'ул. Крымский Вал, 9, Москва', 'https://example.com/park_gorkogo.jpg', 'NATURE'),
+        'ул. Крымский Вал, 9, Москва', 'https://example.com/park_gorkogo.jpg'),
        ('550e8400-e29b-41d4-a716-446655440004', 'Стадион Лужники', 'stadium', 55.7157000, 37.5538000,
-        'ул. Лужники, 24, Москва', 'https://example.com/luzhniki.jpg', 'ENTERTAINMENT'),
+        'ул. Лужники, 24, Москва', 'https://example.com/luzhniki.jpg'),
        ('550e8400-e29b-41d4-a716-446655440005', 'Московский зоопарк', 'zoo', 55.7633000, 37.5769000,
-        'ул. Большая Грузинская, 1, Москва', 'https://example.com/moscow_zoo.jpg', 'NATURE'),
-
+        'ул. Большая Грузинская, 1, Москва', 'https://example.com/moscow_zoo.jpg'),
        ('550e8400-e29b-41d4-a716-446655440006', 'Эрмитаж', 'museum', 59.9398000, 30.3146000,
-        'Дворцовая пл., 2, Санкт-Петербург', 'https://example.com/hermitage.jpg', 'CULTURE'),
+        'Дворцовая пл., 2, Санкт-Петербург', 'https://example.com/hermitage.jpg'),
        ('550e8400-e29b-41d4-a716-446655440007', 'Мариинский театр', 'theater', 59.9256000, 30.2962000,
-        'Театральная пл., 1, Санкт-Петербург', 'https://example.com/mariinsky.jpg', 'CULTURE'),
+        'Театральная пл., 1, Санкт-Петербург', 'https://example.com/mariinsky.jpg'),
        ('550e8400-e29b-41d4-a716-446655440008', 'Петропавловская крепость', 'landmark', 59.9500000, 30.3167000,
-        'Петропавловская крепость, 3, Санкт-Петербург', 'https://example.com/petropavlovskaya.jpg', 'HISTORICAL');
+        'Петропавловская крепость, 3, Санкт-Петербург', 'https://example.com/petropavlovskaya.jpg');

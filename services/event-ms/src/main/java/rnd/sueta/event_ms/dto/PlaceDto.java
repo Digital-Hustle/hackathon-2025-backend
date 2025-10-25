@@ -24,8 +24,6 @@ public record PlaceDto(
 
         String image,
 
-        Category category,
-
         List<Event> events
 ) {
 }

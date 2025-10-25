@@ -11,7 +11,6 @@ import java.util.UUID;
 
 public interface PlaceRepository extends JpaRepository<Place, UUID> {
     @Query("SELECT p FROM Place p WHERE " +
-            "p.category IN :categories AND " +
             "p.latitude BETWEEN :minLatitude AND :maxLatitude AND " +
             "p.longitude BETWEEN :minLongitude AND :maxLongitude")
     List<Place> findPlacesByFilters(
