@@ -33,9 +33,6 @@ dependencies {
 	// swagger
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
 
-	// rabbitmq
-	implementation("org.springframework.boot:spring-boot-starter-amqp")
-
 	// jackson
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.19.2")
 

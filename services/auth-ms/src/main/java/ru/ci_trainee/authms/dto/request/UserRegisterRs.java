@@ -1,4 +1,4 @@
-package ru.ci_trainee.authms.dto;
+package ru.ci_trainee.authms.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class UserRegisterRs {
     @NotNull(message = "Id can't be null", groups = OnUpdate.class)
     private UUID id;
 

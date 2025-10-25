@@ -13,11 +13,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-import ru.ci_trainee.authms.dto.response.JwtResponse;
+import ru.ci_trainee.authms.dto.response.JwtRs;
 import ru.ci_trainee.authms.exception.exception.InvalidTokenException;
-import ru.ci_trainee.authms.model.Role;
 import ru.ci_trainee.authms.model.User;
-import ru.ci_trainee.authms.service.UserService;
+import ru.ci_trainee.authms.service.entity.UserService;
 
 import javax.crypto.SecretKey;
 import java.time.Instant;
@@ -43,7 +42,6 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims()
                 .subject(user.getUsername())
                 .add("id", user.getId())
-                .add("roles", user.getRoles().stream().map(Role::getName).toList())
                 .build();
         Instant validity = Instant.now()
                 .plus(jwtProperties.getAccessDuration(), ChronoUnit.MINUTES);
@@ -69,13 +67,13 @@ public class JwtTokenProvider {
     }
 
     @SneakyThrows
-    public JwtResponse refreshUserTokens(String refreshToken) {
+    public JwtRs refreshUserTokens(String refreshToken) {
         if (!isValid(refreshToken)) throw new InvalidTokenException("Refresh token is expired");
 
         UUID userId = getId(refreshToken);
         User user = userService.getUser(userId);
 
-        return JwtResponse.builder()
+        return JwtRs.builder()
                 .id(userId)
                 .username(user.getUsername())
                 .accessToken(createAccessToken(user))

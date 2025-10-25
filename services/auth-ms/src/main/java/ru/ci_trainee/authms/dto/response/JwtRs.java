@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class JwtResponse {
+public class JwtRs {
     private UUID id;
     private String username;
     private String accessToken;

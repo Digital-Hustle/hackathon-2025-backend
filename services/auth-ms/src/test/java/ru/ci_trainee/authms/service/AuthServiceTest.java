@@ -9,11 +9,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.transaction.annotation.Transactional;
-import ru.ci_trainee.authms.dto.request.JwtRequest;
-import ru.ci_trainee.authms.dto.response.JwtResponse;
+import ru.ci_trainee.authms.dto.request.UserLoginRs;
+import ru.ci_trainee.authms.dto.response.JwtRs;
 import ru.ci_trainee.authms.exception.exception.UserNotFoundException;
 import ru.ci_trainee.authms.model.User;
 import ru.ci_trainee.authms.security.jwt.JwtTokenProvider;
+import ru.ci_trainee.authms.service.entity.UserService;
+import ru.ci_trainee.authms.service.logic.AuthService;
 
 import java.util.UUID;
 
@@ -47,8 +49,8 @@ public class AuthServiceTest {
                 .isActive(true)
                 .build();
 
-        var request = new JwtRequest("testuser", "password");
-        var expectedResponse = JwtResponse.builder()
+        var request = new UserLoginRs("testuser", "password");
+        var expectedResponse = JwtRs.builder()
                 .id(userId)
                 .username("testuser")
                 .accessToken("accessToken")
@@ -59,7 +61,7 @@ public class AuthServiceTest {
         when(jwtTokenProvider.createAccessToken(user)).thenReturn("accessToken");
         when(jwtTokenProvider.createRefreshToken(userId, "testuser")).thenReturn("refreshToken");
 
-        JwtResponse actualResponse = authService.login(request);
+        JwtRs actualResponse = authService.login(request);
 
         // Assert
         assertThat(actualResponse).isEqualTo(expectedResponse);
@@ -78,7 +80,7 @@ public class AuthServiceTest {
 
         when(userService.getUser("inactive")).thenReturn(inactiveUser);
 
-        assertThatThrownBy(() -> authService.login(new JwtRequest("inactive", "pass")))
+        assertThatThrownBy(() -> authService.login(new UserLoginRs("inactive", "pass")))
                 .isInstanceOf(UserNotFoundException.class);
     }
 
@@ -95,7 +97,7 @@ public class AuthServiceTest {
                 .when(authenticationManager).authenticate(any());
 
         // Act & Assert
-        assertThatThrownBy(() -> authService.login(new JwtRequest("testuser", "wrongpass")))
+        assertThatThrownBy(() -> authService.login(new UserLoginRs("testuser", "wrongpass")))
                 .isInstanceOf(BadCredentialsException.class)
                 .hasMessage("Invalid credentials");
     }
@@ -105,7 +107,7 @@ public class AuthServiceTest {
     void refresh_ShouldReturnNewTokens_WhenRefreshTokenValid() {
         // Arrange
         String refreshToken = "valid.refresh.token";
-        JwtResponse expectedResponse = JwtResponse.builder()
+        JwtRs expectedResponse = JwtRs.builder()
                 .accessToken("newAccess")
                 .refreshToken("newRefresh")
                 .build();
@@ -113,7 +115,7 @@ public class AuthServiceTest {
         when(jwtTokenProvider.refreshUserTokens(refreshToken)).thenReturn(expectedResponse);
 
         // Act
-        JwtResponse actualResponse = authService.refresh(refreshToken);
+        JwtRs actualResponse = authService.refresh(refreshToken);
 
         // Assert
         assertThat(actualResponse).isEqualTo(expectedResponse);

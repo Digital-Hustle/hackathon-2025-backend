@@ -30,16 +30,6 @@ public class User {
     @Column(name = "is_active")
     private Boolean isActive;
 
-    @ManyToMany
-    @JoinTable(
-            name = "auth_user_roles",
-            schema = "auth_user_dev",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles;
-
-
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
@@ -47,7 +37,6 @@ public class User {
     private LocalDateTime createdAt;
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
-
 
     @PrePersist
     public void onCreate() {

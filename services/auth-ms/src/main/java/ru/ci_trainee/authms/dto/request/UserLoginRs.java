@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class JwtRequest {
+public class UserLoginRs {
     @NotNull(message = "Username must be not null")
     private String username;
     @NotNull(message = "Password must be not null")

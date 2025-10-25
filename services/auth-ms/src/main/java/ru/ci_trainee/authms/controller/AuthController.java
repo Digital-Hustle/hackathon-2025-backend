@@ -4,27 +4,20 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import ru.ci_trainee.authms.dto.UserDto;
-import ru.ci_trainee.authms.dto.request.JwtRequest;
-import ru.ci_trainee.authms.dto.response.JwtResponse;
+import org.springframework.web.bind.annotation.*;
+import ru.ci_trainee.authms.dto.request.UserLoginRs;
+import ru.ci_trainee.authms.dto.request.UserRegisterRs;
+import ru.ci_trainee.authms.dto.response.JwtRs;
 import ru.ci_trainee.authms.mapper.UserMapper;
-import ru.ci_trainee.authms.service.AuthService;
-import ru.ci_trainee.authms.service.UserService;
+import ru.ci_trainee.authms.service.logic.AuthService;
 import ru.ci_trainee.authms.validation.OnCreate;
 
 @RestController
 @RequestMapping("api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
-
     private final AuthService authService;
-    private final UserService userService;
     private final UserMapper userMapper;
 
     @PostMapping("/login")
@@ -36,12 +29,12 @@ public class AuthController {
                     @ApiResponse(responseCode = "404", description = "User not found")
             }
     )
-    public ResponseEntity<JwtResponse> login(@RequestBody @Validated JwtRequest loginRequest) {
-        return ResponseEntity.ok().body(authService.login(loginRequest));
+    public JwtRs login(@RequestBody @Validated UserLoginRs loginRequest) {
+        return authService.login(loginRequest);
     }
 
-
     @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(
             summary = "Register user",
             responses = {
@@ -51,12 +44,12 @@ public class AuthController {
                     @ApiResponse(responseCode = "400", description = "Id should not be specified")
             }
     )
-    public ResponseEntity<UserDto> register(@RequestBody @Validated(OnCreate.class) UserDto userDto) {
-        var user = userMapper.toEntity(userDto);
-        userDto = userMapper.toDto(userService.create(user, userDto.getPasswordConfirmation()));
-        return new ResponseEntity<>(userDto, HttpStatus.CREATED);
-    }
+    public UserRegisterRs register(@RequestBody @Validated(OnCreate.class) UserRegisterRs userRegisterRs) {
+        var user = userMapper.toEntity(userRegisterRs);
+        userRegisterRs = userMapper.toDto(authService.register(user, userRegisterRs.getPasswordConfirmation()));
 
+        return userRegisterRs;
+    }
 
     @Operation(
             summary = "Refresh tokens",
@@ -65,7 +58,7 @@ public class AuthController {
             }
     )
     @PostMapping("/refresh")
-    public ResponseEntity<JwtResponse> refresh(@RequestBody String refreshToken) {
-        return ResponseEntity.ok().body(authService.refresh(refreshToken));
+    public JwtRs refresh(@RequestBody String refreshToken) {
+        return authService.refresh(refreshToken);
     }
 }
