@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.core.profilems.dto.ProfileDto;
-import ru.core.profilems.dto.response.PageResponse;
+import ru.core.profilems.dto.response.PageRs;
 
 import java.util.UUID;
 
@@ -20,7 +20,7 @@ public interface ProfileController {
                     @ApiResponse(responseCode = "400", description = "Invalid parameters")
             }
     )
-    ResponseEntity<PageResponse<ProfileDto>> getProfiles(Integer page, Integer size);
+    ResponseEntity<PageRs<ProfileDto>> getProfiles(Integer page, Integer size);
 
     @Operation(
             summary = "Search profiles by query(name or surname)",
@@ -29,7 +29,7 @@ public interface ProfileController {
                     @ApiResponse(responseCode = "404", description = "Profiles not found")
             }
     )
-    ResponseEntity<PageResponse<ProfileDto>> searchProfiles(
+    ResponseEntity<PageRs<ProfileDto>> searchProfiles(
             String query, boolean ignoreCase, Integer page, Integer size);
 
     @Operation(

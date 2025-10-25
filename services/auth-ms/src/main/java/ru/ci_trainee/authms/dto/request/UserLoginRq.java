@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserLoginRs {
+public class UserLoginRq {
     @NotNull(message = "Username must be not null")
     private String username;
     @NotNull(message = "Password must be not null")

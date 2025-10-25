@@ -1,2 +1,1 @@
-CREATE SCHEMA IF NOT EXISTS auth_user_dev;
-CREATE SCHEMA IF NOT EXISTS auth_user_docker;
+CREATE SCHEMA IF NOT EXISTS auth_user;

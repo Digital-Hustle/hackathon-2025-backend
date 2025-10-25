@@ -5,12 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "profile", schema = "profile_dev")
+@Table(name = "profile", schema = "profile")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Profile {
@@ -24,8 +27,19 @@ public class Profile {
     @Column(name = "surname", nullable = false)
     private String surname;
 
-    @Column(name = "age", nullable = false)
-    private Integer age;
+    @Column(name = "date_of_birth", nullable = false)
+    private LocalDate dateOfBirth;
+
+    @Column(name = "image")
+    private String image;
+
+    @ManyToMany
+    @JoinTable(
+            name = "profiles_category",
+            joinColumns = @JoinColumn(name = "profile_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> categories = new HashSet<>();
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

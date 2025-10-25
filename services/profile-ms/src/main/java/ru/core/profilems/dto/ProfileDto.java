@@ -12,6 +12,7 @@ import org.hibernate.validator.constraints.Length;
 import ru.core.profilems.validation.OnCreate;
 import ru.core.profilems.validation.OnUpdate;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
@@ -34,9 +35,9 @@ public class ProfileDto {
     @Schema(description = "Surname", example = "Chetvyrtov", type = "String")
     private String surname;
 
-    @NotNull(message = "age must be not null", groups = {OnCreate.class, OnUpdate.class})
-    @Min(value = 0, message = "Age can't be negative", groups = {OnCreate.class, OnUpdate.class})
-    @Max(value = 100, message = "Age should be less or equal 100", groups = {OnCreate.class, OnUpdate.class})
-    @Schema(description = "Age", example = "25", type = "Integer")
-    private Integer age;
+    @NotNull(message = "birth date must be not null", groups = {OnCreate.class, OnUpdate.class})
+    @Schema(description = "Birth date", example = "2020-05-03", type = "Integer")
+    private LocalDate dateOfBirth;
+
+    private String image;
 }
