@@ -11,25 +11,25 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.core.profilems.exception.exception.AccessDeniedException;
 import ru.core.profilems.exception.exception.PageNotFound;
-import ru.core.profilems.dto.response.ExceptionResponse;
+import ru.core.profilems.dto.response.ExceptionRs;
 import ru.core.profilems.exception.exception.ProfileNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@ControllerAdvice
+//@ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(
+    public ResponseEntity<ExceptionRs> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException e,
             HttpServletRequest request
     ) {
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
 
-        var exceptionResponse = ExceptionResponse.builder()
+        var exceptionResponse = ExceptionRs.builder()
                 .message("Validation failed")
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
@@ -51,18 +51,19 @@ public class GlobalExceptionHandler {
             IllegalArgumentException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ExceptionResponse> handleBadRequestException(
+    public ResponseEntity<ExceptionRs> handleBadRequestException(
             RuntimeException e,
             HttpServletRequest request
     ) {
-        var exceptionResponse = ExceptionResponse.builder()
+        var exceptionResponse = ExceptionRs.builder()
                 .message(e.getMessage())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .path(request.getRequestURI())
                 .timestamp(LocalDateTime.now())
                 .build();
-
+        System.out.println("tyta");
+        System.out.println("request:" + request);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(exceptionResponse);
@@ -73,11 +74,11 @@ public class GlobalExceptionHandler {
             PageNotFound.class
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ExceptionResponse> handleProfileNotFoundException(
+    public ResponseEntity<ExceptionRs> handleProfileNotFoundException(
             Exception e,
             HttpServletRequest request
     ) {
-        var exceptionResponse = ExceptionResponse.builder()
+        var exceptionResponse = ExceptionRs.builder()
                 .message(e.getMessage())
                 .status(HttpStatus.NOT_FOUND.value())
                 .error(HttpStatus.NOT_FOUND.getReasonPhrase())
@@ -93,11 +94,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ResponseEntity<ExceptionResponse> handleAccessDeniedException(
+    public ResponseEntity<ExceptionRs> handleAccessDeniedException(
             Exception e,
             HttpServletRequest request
     ) {
-        var exceptionResponse = ExceptionResponse.builder()
+        var exceptionResponse = ExceptionRs.builder()
                 .message(e.getMessage())
                 .status(HttpStatus.FORBIDDEN.value())
                 .error(HttpStatus.FORBIDDEN.getReasonPhrase())

@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.ci_trainee.authms.dto.request.UserLoginRs;
+import ru.ci_trainee.authms.dto.request.UserLoginRq;
 import ru.ci_trainee.authms.dto.request.UserRegisterRs;
 import ru.ci_trainee.authms.dto.response.JwtRs;
 import ru.ci_trainee.authms.mapper.UserMapper;
@@ -29,7 +29,7 @@ public class AuthController {
                     @ApiResponse(responseCode = "404", description = "User not found")
             }
     )
-    public JwtRs login(@RequestBody @Validated UserLoginRs loginRequest) {
+    public JwtRs login(@RequestBody @Validated UserLoginRq loginRequest) {
         return authService.login(loginRequest);
     }
 

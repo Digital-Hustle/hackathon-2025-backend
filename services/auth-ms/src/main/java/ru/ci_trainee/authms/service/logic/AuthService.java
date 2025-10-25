@@ -6,7 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.ci_trainee.authms.dto.request.UserLoginRs;
+import ru.ci_trainee.authms.dto.request.UserLoginRq;
 import ru.ci_trainee.authms.dto.response.JwtRs;
 import ru.ci_trainee.authms.exception.exception.PasswordsDoNotMatchException;
 import ru.ci_trainee.authms.exception.exception.UserNotFoundException;
@@ -36,7 +36,7 @@ public class AuthService {
     }
 
     @Transactional
-    public JwtRs login(UserLoginRs loginRequest) {
+    public JwtRs login(UserLoginRq loginRequest) {
         var user = userService.getUser(loginRequest.getUsername());
         if (!user.getIsActive()) throw new UserNotFoundException();
 

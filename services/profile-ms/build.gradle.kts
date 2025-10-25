@@ -37,9 +37,6 @@ dependencies {
 	implementation("org.springframework.cloud:spring-cloud-starter-config")
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
-	// Minio
-	implementation("io.minio:minio:8.5.17")
-
 	// zipkin
 	implementation("io.micrometer:micrometer-tracing-bridge-brave")
 	implementation("io.zipkin.reporter2:zipkin-reporter-brave")
@@ -50,9 +47,6 @@ dependencies {
 
 	// swagger
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
-
-	// rabbitmq
-	implementation("org.springframework.boot:spring-boot-starter-amqp")
 
 	// jackson
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.19.2")
