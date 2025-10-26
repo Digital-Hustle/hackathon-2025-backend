@@ -7,6 +7,7 @@ import ru.ci_trainee.routes_service.model.Util.Category;
 import ru.ci_trainee.routes_service.model.Util.Point;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -23,4 +24,6 @@ public class RouteRequest {
     private List<Category> categories;
 
     private String routeLength;
+
+    private UUID profileId;
 }

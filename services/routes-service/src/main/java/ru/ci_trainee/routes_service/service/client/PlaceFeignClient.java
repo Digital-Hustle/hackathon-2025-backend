@@ -4,7 +4,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.ci_trainee.routes_service.dto.response.PlacesRs;
-import ru.ci_trainee.routes_service.dto.searchEvents.SearchPlacesDto;
+import ru.ci_trainee.routes_service.dto.searchPlaces.SearchPlacesByIds;
+import ru.ci_trainee.routes_service.dto.searchPlaces.SearchPlacesDto;
 
 @FeignClient(
         name = "placeFeignClient",
@@ -13,5 +14,8 @@ import ru.ci_trainee.routes_service.dto.searchEvents.SearchPlacesDto;
 public interface PlaceFeignClient {
 
     @PostMapping("/api/v1/places")
-    PlacesRs getPlaces(@RequestBody SearchPlacesDto searchEventsDto);
+    PlacesRs getPlaces(@RequestBody SearchPlacesDto searchPlacesDto);
+
+    @PostMapping("/api/v1/places/route")
+    PlacesRs getPlacesByIds(@RequestBody SearchPlacesByIds searchPlacesById);
 }

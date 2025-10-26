@@ -10,7 +10,8 @@ spring:
     password: root
     driver-class-name: org.postgresql.Driver
   liquibase:
-    enabled: false
+    enabled: true
+    change-log: db/changelog/db.changelog-master.yml
 
 server:
   port: 4003
