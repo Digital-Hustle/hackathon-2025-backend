@@ -40,10 +40,6 @@ public class Place {
     @Column(name = "image", length = 500)
     private String image;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "category", length = 100)
-    private Category category;
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "place_id")
     private Set<Event> events;

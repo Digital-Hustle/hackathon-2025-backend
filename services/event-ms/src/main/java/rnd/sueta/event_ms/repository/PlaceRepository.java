@@ -14,10 +14,11 @@ public interface PlaceRepository extends JpaRepository<Place, UUID> {
             "p.latitude BETWEEN :minLatitude AND :maxLatitude AND " +
             "p.longitude BETWEEN :minLongitude AND :maxLongitude")
     List<Place> findPlacesByFilters(
-            List<Category> categories,
             BigDecimal minLatitude,
             BigDecimal maxLatitude,
             BigDecimal minLongitude,
             BigDecimal maxLongitude
     );
+
+    List<Place> findAllByIdIn(List<UUID> ids);
 }

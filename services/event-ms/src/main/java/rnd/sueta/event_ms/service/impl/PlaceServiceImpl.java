@@ -8,7 +8,9 @@ import rnd.sueta.event_ms.repository.PlaceRepository;
 import rnd.sueta.event_ms.service.PlaceService;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -16,12 +18,16 @@ public class PlaceServiceImpl implements PlaceService {
     private final PlaceRepository placeRepository;
 
     @Override
-    public List<Place> getAllByCategories(List<BigDecimal> rangeLat, List<BigDecimal> rangeLon, List<Category> categories) {
+    public List<Place> getAllByCategories(List<BigDecimal> rangeLat, List<BigDecimal> rangeLon) {
 
         return placeRepository.findPlacesByFilters(
-                categories,
                 rangeLat.get(0), rangeLat.get(1),
                 rangeLon.get(0), rangeLon.get(1)
         );
+    }
+
+    @Override
+    public List<Place> getAllPathPlaces(List<UUID> ids) {
+        return placeRepository.findAllByIdIn(ids);
     }
 }
