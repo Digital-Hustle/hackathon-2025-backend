@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.ci_trainee.routes_service.dto.response.PlacesRs;
 import ru.ci_trainee.routes_service.dto.route.RouteRequest;
-import ru.ci_trainee.routes_service.dto.searchEvents.SearchPlacesDto;
+import ru.ci_trainee.routes_service.dto.searchPlaces.SearchPlacesDto;
 import ru.ci_trainee.routes_service.model.Util.Point;
 import ru.ci_trainee.routes_service.service.PlacesService;
 import ru.ci_trainee.routes_service.service.client.PlaceFeignClient;
@@ -27,7 +27,7 @@ public class PlacesServiceImpl implements PlacesService {
         List<Double> rangeLat = Arrays.asList(boundingBox[0], boundingBox[2]);
         List<Double> rangeLon = Arrays.asList(boundingBox[1], boundingBox[3]);
 
-        SearchPlacesDto searchPlacesDto = new SearchPlacesDto(rangeLat, rangeLon, routeRequest.getCategories());
+        SearchPlacesDto searchPlacesDto = new SearchPlacesDto(rangeLat, rangeLon);
 
         return placeFeignClient.getPlaces(searchPlacesDto);
     }

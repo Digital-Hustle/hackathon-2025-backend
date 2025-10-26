@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Entity
-@Table(name = "top_10_routs", schema = "profile_dev")
+@Table(name = "top_10_routes")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,9 +18,8 @@ public class TopRoute {
     @Column(name = "id")
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "route_id")
-    private Route route;
+    @Column(name = "route_id")
+    private UUID routeId;
 
     @Column(name = "position")
     private Integer position;

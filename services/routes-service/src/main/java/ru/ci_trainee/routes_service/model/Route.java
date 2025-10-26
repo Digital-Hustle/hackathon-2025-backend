@@ -2,46 +2,28 @@ package ru.ci_trainee.routes_service.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Data
+@Builder
 @Entity
-@Table(name = "routes", schema = "profile_dev")
+@Table(name = "routes")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Route {
-
-    @Id
-    @Column(name = "id", nullable = false)
-    private UUID id;
-
-    @Column(name = "place_id")
-    private UUID placeId;
+    @EmbeddedId
+    private RouteId routeId;
 
     @Column(name = "profile_id")
     private UUID profileId;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<TopRoute> topRoutes;
-
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
+//    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<TopRoute> topRoutes;
 }
+
+
