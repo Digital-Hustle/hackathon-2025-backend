@@ -33,14 +33,6 @@ public class Profile {
     @Column(name = "image")
     private String image;
 
-    @ManyToMany
-    @JoinTable(
-            name = "profiles_category",
-            joinColumns = @JoinColumn(name = "profile_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    private Set<Category> categories = new HashSet<>();
-
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")

@@ -9,9 +9,7 @@ import ru.core.profilems.dto.CurrentUser;
 import ru.core.profilems.dto.request.SearchParametersRq;
 import ru.core.profilems.exception.exception.PageNotFound;
 import ru.core.profilems.exception.exception.ProfileNotFoundException;
-import ru.core.profilems.model.Category;
 import ru.core.profilems.model.Profile;
-import ru.core.profilems.repository.CategoryRepository;
 import ru.core.profilems.repository.ProfileRepository;
 
 import java.util.ArrayList;
@@ -24,7 +22,6 @@ import java.util.function.BiFunction;
 @Transactional(readOnly = true)
 public class ProfileService {
     private final ProfileRepository profileRepository;
-    private final CategoryRepository categoryRepository;
     private final CurrentUser currentUser;
 
     public Page<Profile> getAllProfiles(Integer page, Integer size) {
@@ -50,12 +47,6 @@ public class ProfileService {
         return profileRepository.findById(profileId).orElseThrow(ProfileNotFoundException::new);
     }
 
-    public List<Category> getCategoriesByProfileId(UUID profileId) {
-        Profile profile = profileRepository.findById(profileId)
-                .orElseThrow(ProfileNotFoundException::new);
-
-        return new ArrayList<>(profile.getCategories());
-    }
 
     @Transactional
     public Profile create(Profile profile) {

@@ -1,18 +1,18 @@
-package ru.core.profilems.controller.impl;
+package ru.core.profilems.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.core.profilems.aop.annotation.HasPermission;
-import ru.core.profilems.aop.annotation.CheckProfileOwnership;
-import ru.core.profilems.controller.ProfileController;
 import ru.core.profilems.dto.ProfileDto;
+import ru.core.profilems.dto.request.SearchParametersRq;
 import ru.core.profilems.dto.response.PageRs;
 import ru.core.profilems.mapper.ProfileMapper;
+import ru.core.profilems.model.Profile;
 import ru.core.profilems.service.ProfileService;
 import ru.core.profilems.validation.OnCreate;
 import ru.core.profilems.validation.OnUpdate;
@@ -30,7 +30,39 @@ public class ProfileControllerImpl implements ProfileController {
     private final ProfileService profileService;
     private final ProfileMapper profileMapper;
 
-    @CheckProfileOwnership
+    @GetMapping
+    @Override
+    public ResponseEntity<PageRs<ProfileDto>> getProfiles(
+            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(value = "size", required = false, defaultValue = "5") Integer size
+    ) {
+        Page<Profile> pageEntity = profileService.getAllProfiles(page, size);
+        var response = toPageResponse(pageEntity, profileMapper::toDto);
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/search")
+    @Override
+    public ResponseEntity<PageRs<ProfileDto>> searchProfiles(
+            @RequestParam("query") String query,
+            @RequestParam(value = "ignoreCase", required = false, defaultValue = "false") boolean ignoreCase,
+            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(value = "size", required = false, defaultValue = "5") Integer size
+    ) {
+        var searchParams = SearchParametersRq.builder()
+                .query(query)
+                .ignoreCase(ignoreCase)
+                .page(page)
+                .size(size)
+                .build();
+
+        Page<Profile> pageEntity = profileService.search(searchParams);
+        var response = toPageResponse(pageEntity, profileMapper::toDto);
+
+        return ResponseEntity.ok().body(response);
+    }
+
     @GetMapping("/{profileId}")
     @Override
     public ResponseEntity<ProfileDto> getProfileById(@PathVariable("profileId") UUID profileId) {
@@ -53,7 +85,7 @@ public class ProfileControllerImpl implements ProfileController {
     }
 
     @PutMapping("/{profileId}")
-    @CheckProfileOwnership
+//    @PreAuthorize("@securityService.isProfileOwner(#profileId)")
     @Override
     public ResponseEntity<ProfileDto> updateProfile(
             @PathVariable(name = "profileId") UUID profileId,
@@ -65,7 +97,7 @@ public class ProfileControllerImpl implements ProfileController {
     }
 
     @DeleteMapping("/{profileId}")
-    @CheckProfileOwnership
+//    @PreAuthorize("@securityService.canAccessProfile(#profileId)")
     @Override
     public ResponseEntity<HttpStatus> deleteProfile(@PathVariable UUID profileId) {
         profileService.delete(profileId);
