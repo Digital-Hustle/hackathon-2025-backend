@@ -2,9 +2,6 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
 
-  liquibase:
-    change-log: db/changelog/db.changelog-master.yml
-
 server:
   port: 4002
 
