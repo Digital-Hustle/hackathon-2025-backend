@@ -85,7 +85,6 @@ public class ProfileControllerImpl implements ProfileController {
     }
 
     @PutMapping("/{profileId}")
-//    @PreAuthorize("@securityService.isProfileOwner(#profileId)")
     @Override
     public ResponseEntity<ProfileDto> updateProfile(
             @PathVariable(name = "profileId") UUID profileId,
@@ -97,7 +96,6 @@ public class ProfileControllerImpl implements ProfileController {
     }
 
     @DeleteMapping("/{profileId}")
-//    @PreAuthorize("@securityService.canAccessProfile(#profileId)")
     @Override
     public ResponseEntity<HttpStatus> deleteProfile(@PathVariable UUID profileId) {
         profileService.delete(profileId);

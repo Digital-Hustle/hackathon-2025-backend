@@ -18,10 +18,10 @@ public class SecurityService {
 
     public UUID getCurrentUserId() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
-        if (!(auth instanceof UserAuthentication ua)) {
+        if (!(auth instanceof UserAuthentication userAuthentication)) {
             throw new AccessDeniedException("No authentication found");
         }
-        return ua.getUserId();
+        return userAuthentication.getUserId();
     }
 
     public String getCurrentUserRole() {
@@ -30,12 +30,13 @@ public class SecurityService {
     }
 
     public boolean isProfileOwner(UUID profileId) {
-        try {
-            UUID currentUserId = getCurrentUserId();
-            return currentUserId != null && currentUserId.equals(profileId);
-        } catch (Exception e) {
+        UUID currentUserId = getCurrentUserId();
+
+        if (currentUserId == null) {
             return false;
         }
+
+        return currentUserId.equals(profileId);
     }
 
     public boolean isAdmin() {
@@ -43,12 +44,10 @@ public class SecurityService {
         return auth != null && "ADMIN".equals(auth.getRole());
     }
 
-    // Универсальный метод для проверки доступа
     public boolean canAccessProfile(UUID profileId) {
         return isProfileOwner(profileId) || isAdmin();
     }
 
-    // Проверка наличия любой из ролей
     public boolean hasAnyRole(String... roles) {
         String currentRole = getCurrentUserRole();
         if (currentRole == null) return false;
