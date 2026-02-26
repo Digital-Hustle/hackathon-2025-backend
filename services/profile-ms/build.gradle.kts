@@ -2,6 +2,8 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.5.0"
 	id("io.spring.dependency-management") version "1.1.7"
+
+    id("checkstyle")
 }
 
 group = "ru.core"
@@ -25,6 +27,9 @@ repositories {
 
 extra["springCloudVersion"] = "2025.0.0"
 
+// paths
+val checkstylePath = "../../checkstyle"
+
 dependencies {
 	// boot starters
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -32,6 +37,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-aop")
+    implementation("org.springframework.boot:spring-boot-starter-security")
 
 	// cloud starters
 	implementation("org.springframework.cloud:spring-cloud-starter-config")
@@ -73,6 +79,19 @@ dependencyManagement {
 	imports {
 		mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
 	}
+}
+
+checkstyle {
+    toolVersion = "13.0.0"
+    configFile = file("$checkstylePath/checkstyle.xml")
+    configDirectory = file(checkstylePath)
+
+    configProperties = mapOf(
+        "checkstyle.dir" to file(checkstylePath).absolutePath,
+        "checkstyle.cache.file" to layout.buildDirectory.file("checkstyle/cache.properties").get().asFile.absolutePath
+    )
+
+    isIgnoreFailures = false
 }
 
 tasks.withType<Test> {

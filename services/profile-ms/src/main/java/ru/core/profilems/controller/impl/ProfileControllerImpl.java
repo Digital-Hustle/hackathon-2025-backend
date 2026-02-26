@@ -1,4 +1,4 @@
-package ru.core.profilems.controller;
+package ru.core.profilems.controller.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.core.profilems.controller.ProfileController;
 import ru.core.profilems.dto.ProfileDto;
 import ru.core.profilems.dto.request.SearchParametersRq;
 import ru.core.profilems.dto.response.PageRs;
@@ -31,7 +32,7 @@ public class ProfileControllerImpl implements ProfileController {
     private final ProfileMapper profileMapper;
 
     @GetMapping
-    @Override
+//    @Override TODO добавь пж в ProfileController + сваггер к ним
     public ResponseEntity<PageRs<ProfileDto>> getProfiles(
             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "5") Integer size
@@ -43,7 +44,7 @@ public class ProfileControllerImpl implements ProfileController {
     }
 
     @GetMapping("/search")
-    @Override
+//    @Override TODO добавь пж в ProfileController + сваггер к ним
     public ResponseEntity<PageRs<ProfileDto>> searchProfiles(
             @RequestParam("query") String query,
             @RequestParam(value = "ignoreCase", required = false, defaultValue = "false") boolean ignoreCase,
