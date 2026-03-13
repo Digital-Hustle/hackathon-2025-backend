@@ -9,11 +9,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @SpringBootApplication
 @EnableFeignClients
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 public class ProfileMsApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProfileMsApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ProfileMsApplication.class, args);
+    }
 
 }

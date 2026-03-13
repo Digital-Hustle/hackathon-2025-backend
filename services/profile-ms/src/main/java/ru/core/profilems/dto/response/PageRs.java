@@ -2,17 +2,11 @@ package ru.core.profilems.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @JsonPropertyOrder({
         "content", "totalPages", "totalElements",
         "curPage", "pageSize"

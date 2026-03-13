@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.core.profilems.constants.ContextKeys;
 import ru.core.profilems.dto.CurrentUser;
 import ru.core.profilems.dto.request.SearchParametersRq;
 import ru.core.profilems.exception.exception.PageNotFound;
@@ -12,8 +13,6 @@ import ru.core.profilems.exception.exception.ProfileNotFoundException;
 import ru.core.profilems.model.Profile;
 import ru.core.profilems.repository.ProfileRepository;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.function.BiFunction;
 
@@ -22,23 +21,28 @@ import java.util.function.BiFunction;
 @Transactional(readOnly = true)
 public class ProfileService {
     private final ProfileRepository profileRepository;
-    private final CurrentUser currentUser;
 
     public Page<Profile> getAllProfiles(Integer page, Integer size) {
         var pageEntity = profileRepository.findAll(PageRequest.of(page - 1, size));
 
-        if (pageEntity.getTotalPages() < page) throw new PageNotFound("Such page does not exist");
+        if (pageEntity.getTotalPages() < page) {
+            throw new PageNotFound("Such page does not exist");
+        }
 
         return pageEntity;
     }
 
     public Page<Profile> search(SearchParametersRq searchParametersRq) {
-        BiFunction<String, PageRequest, Page<Profile>> method = searchParametersRq.isIgnoreCase() ?
-                profileRepository::searchAnywhereInNameOrSurnameIgnoreCase :
-                profileRepository::searchAnywhereInNameOrSurname;
+        BiFunction<String, PageRequest, Page<Profile>> method = searchParametersRq.ignoreCase()
+                ? profileRepository::searchAnywhereInNameOrSurnameIgnoreCase
+                : profileRepository::searchAnywhereInNameOrSurname;
 
-        var pageEntity = method.apply(searchParametersRq.getQuery(), searchParametersRq.getPageRequest());
-        if (pageEntity.getTotalPages() < searchParametersRq.getPage()) throw new PageNotFound("Such page does not exist");
+        var pageRq = PageRequest.of(searchParametersRq.page() - 1, searchParametersRq.size());
+        var pageEntity = method.apply(searchParametersRq.query(), pageRq);
+
+        if (pageEntity.getTotalPages() < searchParametersRq.page()) {
+            throw new PageNotFound("Such page does not exist");
+        }
 
         return pageEntity;
     }
@@ -47,30 +51,34 @@ public class ProfileService {
         return profileRepository.findById(profileId).orElseThrow(ProfileNotFoundException::new);
     }
 
-
     @Transactional
     public Profile create(Profile profile) {
-        profile.setProfileId(UUID.fromString(currentUser.getUserId()));
-        if(profileRepository.existsById(profile.getProfileId()))
+        UUID profileId = CurrentUser.get(ContextKeys.USER_ID, UUID.class);
+        Profile profileWithId = profile.toBuilder()
+                .profileId(profileId)
+                .build();
+
+        if (profileRepository.existsById(profile.getProfileId())) {
             throw new IllegalArgumentException("Profile with ID " + profile.getProfileId() + " already exists");
+        }
 
-        profile.setProfileId(profile.getProfileId());
-
-        return profileRepository.save(profile);
+        return profileRepository.save(profileWithId);
     }
 
     @Transactional
     public Profile update(UUID profileId, Profile profile) {
-        if (!profileId.equals(profile.getProfileId()))
+        if (!profileId.equals(profile.getProfileId())) {
             throw new IllegalArgumentException("ID in path and body must match");
+        }
 
         var existedProfile = getProfile(profileId);
 
-        existedProfile.setName(profile.getName());
-        existedProfile.setSurname(profile.getSurname());
-        existedProfile.setDateOfBirth(profile.getDateOfBirth());
+        Profile updatedProfile = existedProfile.toBuilder()
+                .name(profile.getName())
+                .surname(profile.getSurname())
+                .build();
 
-        return profileRepository.save(existedProfile);
+        return profileRepository.save(updatedProfile);
     }
 
     @Transactional

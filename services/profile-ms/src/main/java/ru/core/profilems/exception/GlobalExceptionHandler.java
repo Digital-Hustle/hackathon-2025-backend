@@ -6,28 +6,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.core.profilems.dto.response.ExceptionRs;
 import ru.core.profilems.exception.exception.AccessDeniedException;
 import ru.core.profilems.exception.exception.PageNotFound;
-import ru.core.profilems.dto.response.ExceptionRs;
 import ru.core.profilems.exception.exception.ProfileNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ExceptionRs> handleMethodArgumentNotValidException(
-            MethodArgumentNotValidException e,
+            MethodArgumentNotValidException exception,
             HttpServletRequest request
     ) {
-        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+        List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
 
         var exceptionResponse = ExceptionRs.builder()
                 .message("Validation failed")
@@ -52,18 +52,17 @@ public class GlobalExceptionHandler {
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ExceptionRs> handleBadRequestException(
-            RuntimeException e,
+            RuntimeException exception,
             HttpServletRequest request
     ) {
         var exceptionResponse = ExceptionRs.builder()
-                .message(e.getMessage())
+                .message(exception.getMessage())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .path(request.getRequestURI())
                 .timestamp(LocalDateTime.now())
                 .build();
-        System.out.println("tyta");
-        System.out.println("request:" + request);
+
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(exceptionResponse);
@@ -75,11 +74,11 @@ public class GlobalExceptionHandler {
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ExceptionRs> handleProfileNotFoundException(
-            Exception e,
+            Exception exception,
             HttpServletRequest request
     ) {
         var exceptionResponse = ExceptionRs.builder()
-                .message(e.getMessage())
+                .message(exception.getMessage())
                 .status(HttpStatus.NOT_FOUND.value())
                 .error(HttpStatus.NOT_FOUND.getReasonPhrase())
                 .path(request.getRequestURI())
@@ -91,15 +90,14 @@ public class GlobalExceptionHandler {
                 .body(exceptionResponse);
     }
 
-
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity<ExceptionRs> handleAccessDeniedException(
-            Exception e,
+            Exception exception,
             HttpServletRequest request
     ) {
         var exceptionResponse = ExceptionRs.builder()
-                .message(e.getMessage())
+                .message(exception.getMessage())
                 .status(HttpStatus.FORBIDDEN.value())
                 .error(HttpStatus.FORBIDDEN.getReasonPhrase())
                 .path(request.getRequestURI())

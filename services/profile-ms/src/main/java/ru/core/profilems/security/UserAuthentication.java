@@ -23,6 +23,7 @@ public class UserAuthentication implements Authentication {
         if (role == null || role.isBlank()) {
             return List.of();
         }
+
         String authority = role.startsWith("ROLE_") ? role : "ROLE_" + role;
         return List.of(new SimpleGrantedAuthority(authority));
     }

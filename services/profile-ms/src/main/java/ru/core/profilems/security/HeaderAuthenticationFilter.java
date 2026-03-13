@@ -37,8 +37,8 @@ public class HeaderAuthenticationFilter extends OncePerRequestFilter {
                 log.debug("No user headers found - unauthenticated request");
             }
 
-        } catch (Exception e) {
-            log.warn("Failed to parse user headers: {}", e.getMessage());
+        } catch (Exception exception) {
+            log.warn("Failed to parse user headers: {}", exception.getMessage());
             SecurityContextHolder.clearContext();
         }
 

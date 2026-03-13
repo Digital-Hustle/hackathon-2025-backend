@@ -18,9 +18,11 @@ public class SecurityService {
 
     public UUID getCurrentUserId() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
+
         if (!(auth instanceof UserAuthentication userAuthentication)) {
             throw new AccessDeniedException("No authentication found");
         }
+
         return userAuthentication.getUserId();
     }
 
@@ -50,7 +52,10 @@ public class SecurityService {
 
     public boolean hasAnyRole(String... roles) {
         String currentRole = getCurrentUserRole();
-        if (currentRole == null) return false;
+
+        if (currentRole == null) {
+            return false;
+        }
 
         for (String role : roles) {
             if (currentRole.equals(role)) return true;

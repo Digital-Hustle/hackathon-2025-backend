@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class CustomHeaders {
-    public static final String USER_ID = "X-User-Id";
-    public static final String USERNAME = "X-User-Name";
+public final class ContextKeys {
+    public static final String USER_ID = "USER_ID";
+    public static final String USERNAME = "USERNAME";
 }

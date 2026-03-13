@@ -1,27 +1,34 @@
 package ru.core.profilems.dto;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CurrentUser {
-    private static final ThreadLocal<String> userId = new ThreadLocal<>();
-    private static final ThreadLocal<String> username = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, Object>> CONTEXT_HOLDER = ThreadLocal.withInitial(HashMap::new);
 
-    public void setUserId(String id) {
-        userId.set(id);
+    public static <T> T get(String key, Class<T> type) {
+        Object value = CONTEXT_HOLDER.get().get(key);
+
+        return type.isInstance(value) ? type.cast(value) : null;
     }
 
-    public String getUserId() {
-        return userId.get();
+    public static void put(String key, Object value) {
+        CONTEXT_HOLDER.get().put(key, value);
     }
 
-    public void setUsername(String name) {
-        username.set(name);
+    public static void remove(String key) {
+        CONTEXT_HOLDER.get().remove(key);
     }
 
-    public String getUsername() {
-        return username.get();
+    public static void clearMap() {
+        CONTEXT_HOLDER.get().clear();
     }
 
-    public void clear() {
-        userId.remove();
-        username.remove();
+    public static void clear() {
+        CONTEXT_HOLDER.remove();
     }
 }

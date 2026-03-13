@@ -5,9 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.core.profilems.controller.ProfileController;
 import ru.core.profilems.dto.ProfileDto;
 import ru.core.profilems.dto.request.SearchParametersRq;
@@ -28,28 +34,21 @@ import java.util.function.Function;
 @RequestMapping("api/v1/profile")
 @RequiredArgsConstructor
 public class ProfileControllerImpl implements ProfileController {
+
     private final ProfileService profileService;
     private final ProfileMapper profileMapper;
 
-    @GetMapping
-//    @Override TODO добавь пж в ProfileController + сваггер к ним
-    public ResponseEntity<PageRs<ProfileDto>> getProfiles(
-            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-            @RequestParam(value = "size", required = false, defaultValue = "5") Integer size
-    ) {
+    @Override
+    public ResponseEntity<PageRs<ProfileDto>> getProfiles(Integer page, Integer size) {
         Page<Profile> pageEntity = profileService.getAllProfiles(page, size);
         var response = toPageResponse(pageEntity, profileMapper::toDto);
 
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/search")
-//    @Override TODO добавь пж в ProfileController + сваггер к ним
+    @Override
     public ResponseEntity<PageRs<ProfileDto>> searchProfiles(
-            @RequestParam("query") String query,
-            @RequestParam(value = "ignoreCase", required = false, defaultValue = "false") boolean ignoreCase,
-            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-            @RequestParam(value = "size", required = false, defaultValue = "5") Integer size
+            String query, boolean ignoreCase, Integer page, Integer size
     ) {
         var searchParams = SearchParametersRq.builder()
                 .query(query)

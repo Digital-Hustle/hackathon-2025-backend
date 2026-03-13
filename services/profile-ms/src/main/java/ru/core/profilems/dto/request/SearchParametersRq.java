@@ -1,18 +1,15 @@
 package ru.core.profilems.dto.request;
 
 import lombok.Builder;
-import lombok.Data;
-import org.springframework.data.domain.PageRequest;
 
-@Data
 @Builder
-public class SearchParametersRq {
-    private String query;
-    private boolean ignoreCase;
-    private Integer page;
-    private Integer size;
+public record SearchParametersRq(
+        String query,
 
-    public PageRequest getPageRequest() {
-        return PageRequest.of(page - 1, size);
-    }
+        boolean ignoreCase,
+
+        Integer page,
+
+        Integer size
+) {
 }

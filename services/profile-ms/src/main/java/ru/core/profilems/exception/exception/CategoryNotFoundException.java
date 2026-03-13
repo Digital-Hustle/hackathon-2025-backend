@@ -1,6 +1,6 @@
 package ru.core.profilems.exception.exception;
 
-public class CategoryNotFoundException extends RuntimeException{
+public class CategoryNotFoundException extends RuntimeException {
     public CategoryNotFoundException() {
         super("Category not found");
     }

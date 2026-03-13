@@ -1,21 +1,26 @@
 package ru.core.profilems.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
-@Data
 @Entity
-@Table(name = "profile", schema = "profile")
-@NoArgsConstructor
+@Getter
+@Builder(toBuilder = true)
 @AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "profile", schema = "profile")
 public class Profile {
     @Id
     @Column(name = "id", nullable = false)
@@ -35,6 +40,7 @@ public class Profile {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
