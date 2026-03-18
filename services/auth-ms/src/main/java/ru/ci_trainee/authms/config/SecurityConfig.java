@@ -79,4 +79,16 @@ public class SecurityConfig {
                 .addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://192.168.180.117:3000", "http://192.168.180.250:3000", "http://localhost:8081", "http://172.20.10.2:3000", "http://172.20.10.2:8080", "http://155.212.128.222", "https://155.212.128.222", "http://digital-hustle.ru", "https://digital-hustle.ru", "http://localhost:8080", "null", "http://172.17.0.1:8080", "http://127.0.0.1:8080", "http://localhost", "http://155.212.128.222:80", "http://155.212.128.222:8080", "https://155.212.128.222:80", "https://155.212.128.222:8080"));
+        configuration.addAllowedMethod("*");
+        configuration.addAllowedHeader("*");
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }
