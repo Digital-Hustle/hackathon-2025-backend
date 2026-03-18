@@ -42,5 +42,7 @@ runs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
         build-args: |
-          GRADLE_VERSION=8.4
+          GRADLE_VERSION=9.3
           JDK_VERSION=21
+          GPR_USER=${{ secrets.USERNAME_GITHUB }}
+          GPR_KEY=${{ secrets.TOKEN_GITHUB }}

@@ -1,6 +1,10 @@
 name: Spring microservices monorepo CI (Merge)
 
 on:
+  push:
+    branches:
+      - main
+      - develop
   pull_request:
     branches:
       - main
@@ -15,8 +19,11 @@ jobs:
     needs: common-jobs
     if: |
       needs.common-jobs.outputs.has_services_changes == 'true' &&
-      github.event.pull_request.merged == true &&
-      (github.event.pull_request.base.ref == 'main' || github.event.pull_request.base.ref == 'develop')
+      (
+        (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')) ||
+        (github.event_name == 'pull_request' && github.event.pull_request.merged == true && 
+            (github.event.pull_request.base.ref == 'main' || github.event.pull_request.base.ref == 'develop'))
+      )
     runs-on: ubuntu-latest
     strategy:
       matrix:
