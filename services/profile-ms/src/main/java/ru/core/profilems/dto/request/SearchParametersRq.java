@@ -1,18 +1,19 @@
 package ru.core.profilems.dto.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import lombok.Data;
-import org.springframework.data.domain.PageRequest;
+import ru.core.profilems.constants.ErrorMessages;
 
-@Data
-@Builder
-public class SearchParametersRq {
-    private String query;
-    private boolean ignoreCase;
-    private Integer page;
-    private Integer size;
+@Builder(toBuilder = true)
+public record SearchParametersRq(
 
-    public PageRequest getPageRequest() {
-        return PageRequest.of(page - 1, size);
-    }
+        @NotNull(message = "query" + ErrorMessages.IS_REQUIRED)
+        String query,
+
+        boolean ignoreCase,
+
+        Integer page,
+
+        Integer size
+) {
 }

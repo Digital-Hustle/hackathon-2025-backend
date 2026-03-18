@@ -63,6 +63,8 @@ runs:
       working-directory: ./services/${{ matrix.service }}
       env:
         CI: 'true'
+        USERNAME_GITHUB: ${{ secrets.USERNAME_GITHUB }}          # или ваш username
+        TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
       run: |
         echo "=== Building with PostgreSQL service for JOOQ generation ==="
         echo "Service: ${{ matrix.service }}"
