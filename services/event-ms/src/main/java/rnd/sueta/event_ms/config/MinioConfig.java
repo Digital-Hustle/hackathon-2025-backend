@@ -16,6 +16,7 @@ import rnd.sueta.event_ms.exception.custom.BucketCreationException;
 @Configuration
 @RequiredArgsConstructor
 public class MinioConfig {
+
     private final AppMinioProperties appMinioProperties;
 
     @Bean

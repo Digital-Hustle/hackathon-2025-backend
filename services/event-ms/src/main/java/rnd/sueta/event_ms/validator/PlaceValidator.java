@@ -1,12 +1,14 @@
 package rnd.sueta.event_ms.validator;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.stereotype.Component;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import rnd.sueta.event_ms.constants.ErrorMessages;
 
-@Component
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PlaceValidator {
-    public void checkPlaceExistence(boolean exists) {
+
+    public static void checkPlaceExistence(boolean exists) {
         if (!exists) {
             throw new EntityNotFoundException(
                     String.format(ErrorMessages.NOT_FOUND, "Place")

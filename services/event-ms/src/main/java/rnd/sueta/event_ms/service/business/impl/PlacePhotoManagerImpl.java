@@ -11,10 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 import rnd.sueta.event_ms.enums.PhotoOwnerType;
 import rnd.sueta.event_ms.helper.PhotoHelper;
 import rnd.sueta.event_ms.model.PhotoWithUrl;
-import rnd.sueta.event_ms.model.entity.PhotoMetaInfo;
-import rnd.sueta.event_ms.service.business.PlacePhotoManager;
+import rnd.sueta.event_ms.model.entity.PhotoMeta;
+import rnd.sueta.event_ms.service.business.PhotoManager;
+import rnd.sueta.event_ms.service.entity.PhotoMetaService;
 import rnd.sueta.event_ms.service.entity.PhotoService;
-import rnd.sueta.event_ms.service.entity.PlacePhotoMetaInfoService;
 import rnd.sueta.event_ms.service.entity.PlaceService;
 import rnd.sueta.event_ms.util.PhotoFactory;
 import rnd.sueta.event_ms.validator.PhotoValidator;
@@ -22,21 +22,20 @@ import rnd.sueta.event_ms.validator.PhotoValidator;
 import java.util.UUID;
 
 @Slf4j
-@Service
+@Service("placePhotoManager")
 @RequiredArgsConstructor
-public class PlacePhotoManagerImpl implements PlacePhotoManager {
+public class PlacePhotoManagerImpl implements PhotoManager {
 
     private final PhotoService photoService;
     private final PlaceService placeService;
-    private final PlacePhotoMetaInfoService placePhotoMetaInfoService;
-    private final PhotoValidator photoValidator;
+    private final PhotoMetaService placePhotoMetaService;
     private final PhotoHelper photoHelper;
 
     @Override
     public Page<PhotoWithUrl> getAllByOwnerId(UUID ownerId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<PhotoMetaInfo> photosPage = placePhotoMetaInfoService.getByOwnerId(ownerId, pageable);
+        Page<PhotoMeta> photosPage = placePhotoMetaService.getByOwnerId(ownerId, pageable);
         return photosPage.map(photoMetaInfo -> {
             String url = photoHelper.getPhotoUrl(photoMetaInfo);
 
@@ -45,20 +44,20 @@ public class PlacePhotoManagerImpl implements PlacePhotoManager {
     }
 
     @Override
-    public PhotoMetaInfo createPhoto(UUID ownerId, MultipartFile photo) {
-        photoValidator.checkPhotoExtension(photo);
+    public PhotoMeta createPhoto(UUID ownerId, MultipartFile photo) {
+        PhotoValidator.checkPhotoExtension(photo);
 
         boolean ownerExists = placeService.exists(ownerId);
-        photoValidator.checkOwnerExistence(ownerExists);
+        PhotoValidator.checkOwnerExistence(ownerExists);
 
-        PhotoMetaInfo photoMetaInfo = PhotoFactory.newDefaultPhotoMetaInfo(photo).toBuilder()
+        PhotoMeta photoMeta = PhotoFactory.newDefaultPhotoMetaInfo(photo).toBuilder()
                 .ownerType(PhotoOwnerType.PLACES)
                 .build();
 
-        PhotoMetaInfo savedPhotoMeta = placePhotoMetaInfoService.create(ownerId, photoMetaInfo);
+        PhotoMeta savedPhotoMeta = placePhotoMetaService.create(ownerId, photoMeta);
 
         String absolutePhotoPath = photoHelper.getAbsolutePhotoPath(
-                photoMetaInfo.toBuilder()
+                photoMeta.toBuilder()
                         .id(savedPhotoMeta.getId())
                         .build()
         );
@@ -70,10 +69,10 @@ public class PlacePhotoManagerImpl implements PlacePhotoManager {
     @Override
     public void deletePhoto(UUID id) {
         try {
-            PhotoMetaInfo photoMetaInfo = placePhotoMetaInfoService.getById(id);
-            String absolutePhotoPath = photoHelper.getAbsolutePhotoPath(photoMetaInfo);
+            PhotoMeta photoMeta = placePhotoMetaService.getById(id);
+            String absolutePhotoPath = photoHelper.getAbsolutePhotoPath(photoMeta);
 
-            placePhotoMetaInfoService.delete(id);
+            placePhotoMetaService.delete(id);
             photoService.delete(absolutePhotoPath);
         } catch (EntityNotFoundException exception) {
             log.debug("Photo with id {} not found, deletion skipped", id);

@@ -16,9 +16,13 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public record CreateEventRq(
+
         @NotBlank(message = "title " + ValidationErrorMessages.IS_REQUIRED)
         @Size(max = EventConstants.MAX_TITLE_LENGTH, message = "title " + ValidationErrorMessages.STRING_IS_TOO_LONG)
         String title,
+
+        @NotNull(message = "organizerId " + ValidationErrorMessages.IS_REQUIRED)
+        UUID organizerId,
 
         @NotNull(message = "eventType " + ValidationErrorMessages.IS_REQUIRED)
         EventType type,

@@ -11,10 +11,8 @@ import rnd.sueta.event_ms.enums.EventType;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 public record CreateRouteRq(
-        UUID profileId,
 
         @Valid
         PointDto startPoint,

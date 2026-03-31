@@ -7,6 +7,7 @@ import java.util.UUID;
 
 @Builder(toBuilder = true)
 public record RouteWithPlaces(
+
         UUID id,
 
         UUID profileId,

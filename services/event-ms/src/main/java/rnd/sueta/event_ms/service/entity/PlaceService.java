@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PlaceService {
+
     Page<PlaceWithCoordinates> getAll(int page, int size);
 
     List<PlaceWithCoordinates> getByRouteId(UUID routeId);
@@ -16,6 +17,12 @@ public interface PlaceService {
     PlaceWithCoordinates create(PlaceWithCoordinates place);
 
     PlaceWithCoordinates update(UUID id, PlaceWithCoordinates place);
+
+    void incrementRating(UUID id, Integer newRate);
+
+    void updateRating(UUID id, Integer oldRate, Integer newRate);
+
+    void decrementRating(UUID id, Integer newRate);
 
     void delete(UUID id);
 

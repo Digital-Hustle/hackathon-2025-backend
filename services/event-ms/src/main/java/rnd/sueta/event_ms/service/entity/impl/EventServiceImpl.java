@@ -24,6 +24,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
+
     private final EventRepository eventRepository;
 
     @Override
@@ -68,6 +69,21 @@ public class EventServiceImpl implements EventService {
                         .id(id)
                         .build()
         );
+    }
+
+    @Override
+    public void incrementRating(UUID id, Integer newRate) {
+        eventRepository.incrementRating(id, newRate);
+    }
+
+    @Override
+    public void updateRating(UUID id, Integer oldRate, Integer newRate) {
+        eventRepository.updateRating(id, oldRate, newRate);
+    }
+
+    @Override
+    public void decrementRating(UUID id, Integer oldRate) {
+        eventRepository.decrementRating(id, oldRate);
     }
 
     @Override

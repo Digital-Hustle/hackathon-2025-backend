@@ -11,11 +11,16 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record EventDto(
+
         UUID id,
+
+        UUID organizerId,
 
         String title,
 
         EventType type,
+
+        BigDecimal rating,
 
         OffsetDateTime eventStart,
 

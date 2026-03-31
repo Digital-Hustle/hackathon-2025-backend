@@ -1,3 +1,4 @@
+import org.jooq.meta.jaxb.ForcedType
 import org.jooq.meta.jaxb.Generator
 import org.jooq.meta.jaxb.Jdbc
 import org.jooq.meta.jaxb.Logging
@@ -63,9 +64,13 @@ val postgresVersion = "42.6.0"
 val minioVersion = "8.5.7"
 val jakartaPersistenceVersion = "3.2.0"
 val jooqVersion = "3.19.13"
+val jacksonDatabindVersion = "2.15.2"
 val liquibaseVersion = "4.33.0"
 val mapstructVersion = "1.6.3"
 val apacheCommonsIoVersion = "2.21.0"
+val apacheCommonsValidatorVersion = "1.10.0"
+val libphonenumberVersion = "9.0.24"
+val springdocVersion = "2.8.13"
 val lombokMapstructBindingVersion = "0.2.0"
 
 //
@@ -103,10 +108,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-aop")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-jooq")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
 
     // cloud starters
     implementation("org.springframework.cloud:spring-cloud-starter-config")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
 
     // spring
     implementation("org.springframework.data:spring-data-commons")
@@ -120,6 +125,8 @@ dependencies {
     // db
     runtimeOnly("org.postgresql:postgresql:$postgresVersion")
     jooqGenerator("org.postgresql:postgresql:$postgresVersion")
+    implementation("org.jooq:jooq-jackson-extensions:$jooqVersion")
+    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonDatabindVersion")
 
     // liquibase
     liquibaseRuntime("org.postgresql:postgresql:$postgresVersion")
@@ -133,9 +140,11 @@ dependencies {
 
     // utils
     implementation("commons-io:commons-io:$apacheCommonsIoVersion")
+    implementation("commons-validator:commons-validator:$apacheCommonsValidatorVersion")
+    implementation("com.googlecode.libphonenumber:libphonenumber:$libphonenumberVersion")
 
     // swagger
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocVersion")
 
     // lombok
     compileOnly("org.projectlombok:lombok")
@@ -197,6 +206,15 @@ jooq {
                         name = "org.jooq.meta.postgres.PostgresDatabase"
                         inputSchema = dbSchema
                         excludes = "databasechangelog|databasechangeloglock"
+
+                        forcedTypes = listOf(
+                            ForcedType().apply {
+                                userType = "rnd.sueta.event_ms.model.entity.Contacts"
+                                isJsonConverter = true
+                                includeExpression = ".*\\.contacts"
+                                includeTypes = "(?i:jsonb)"
+                            }
+                        )
                     }
                     generate = org.jooq.meta.jaxb.Generate().apply {
                         isDeprecated = false

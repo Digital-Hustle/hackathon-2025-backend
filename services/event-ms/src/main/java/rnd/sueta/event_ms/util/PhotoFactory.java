@@ -5,18 +5,18 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 import rnd.sueta.event_ms.model.PhotoWithUrl;
-import rnd.sueta.event_ms.model.entity.PhotoMetaInfo;
+import rnd.sueta.event_ms.model.entity.PhotoMeta;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PhotoFactory {
 
-    public static PhotoMetaInfo newDefaultPhotoMetaInfo(MultipartFile file) {
+    public static PhotoMeta newDefaultPhotoMetaInfo(MultipartFile file) {
         String fileNameWithExtension = file.getOriginalFilename();
 
         String fileName = FilenameUtils.getBaseName(fileNameWithExtension);
         String extension = FilenameUtils.getExtension(fileNameWithExtension);
 
-        return PhotoMetaInfo.builder()
+        return PhotoMeta.builder()
                 .originalFileName(fileName)
                 .extension(extension)
                 .fileSize((int) file.getSize())
@@ -24,10 +24,10 @@ public final class PhotoFactory {
                 .build();
     }
 
-    public static PhotoWithUrl newDefaultPhotoWithUrl(PhotoMetaInfo photoMetaInfo, String url) {
+    public static PhotoWithUrl newDefaultPhotoWithUrl(PhotoMeta photoMeta, String url) {
         return PhotoWithUrl.builder()
-                .id(photoMetaInfo.getId())
-                .originalFileName(photoMetaInfo.getOriginalFileName())
+                .id(photoMeta.getId())
+                .originalFileName(photoMeta.getOriginalFileName())
                 .url(url)
                 .build();
     }

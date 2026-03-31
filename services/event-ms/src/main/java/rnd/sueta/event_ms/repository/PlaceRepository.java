@@ -19,6 +19,7 @@ import java.util.UUID;
 @Repository
 @RequiredArgsConstructor
 public class PlaceRepository {
+
     private final DSLContext dsl;
     private final PlaceWithCoordinatesMapper placeWithCoordinatesMapper;
 
@@ -47,16 +48,6 @@ public class PlaceRepository {
                 .where(Tables.ROUTE_PLACES.ROUTE_ID.eq(routeId))
                 .fetch()
                 .map(placeWithCoordinatesMapper);
-    }
-
-    public List<UUID> findAllIdsInRange(Point startPoint, Point endPoint) {
-        return dsl.select()
-                .from(Tables.PLACES)
-                .join(Tables.POINTS)
-                .on(Tables.POINTS.ID.eq(Tables.PLACES.POINT_ID))
-                .where(Tables.POINTS.LATITUDE.between(startPoint.getLatitude(), endPoint.getLatitude()))
-                .and(Tables.POINTS.LONGITUDE.between(startPoint.getLongitude(), endPoint.getLongitude()))
-                .fetch(Tables.PLACES.ID, UUID.class);
     }
 
     public Optional<PlaceWithCoordinates> findById(UUID id) {
@@ -88,6 +79,29 @@ public class PlaceRepository {
                 .execute();
 
         return place;
+    }
+
+    public void incrementRating(UUID id, Integer newRate) {
+        dsl.update(Tables.PLACES)
+                .set(Tables.PLACES.TOTAL_RATING, Tables.PLACES.TOTAL_RATING.plus(newRate))
+                .set(Tables.PLACES.REVIEWS_AMOUNT, Tables.PLACES.REVIEWS_AMOUNT.plus(1))
+                .where(Tables.PLACES.ID.eq(id))
+                .execute();
+    }
+
+    public void updateRating(UUID id, Integer oldRate, Integer newRate) {
+        dsl.update(Tables.PLACES)
+                .set(Tables.PLACES.TOTAL_RATING, Tables.PLACES.TOTAL_RATING.minus(oldRate).plus(newRate))
+                .where(Tables.PLACES.ID.eq(id))
+                .execute();
+    }
+
+    public void decrementRating(UUID id, Integer oldRate) {
+        dsl.update(Tables.PLACES)
+                .set(Tables.PLACES.TOTAL_RATING, Tables.PLACES.TOTAL_RATING.minus(oldRate))
+                .set(Tables.PLACES.REVIEWS_AMOUNT, Tables.PLACES.REVIEWS_AMOUNT.minus(1))
+                .where(Tables.PLACES.ID.eq(id))
+                .execute();
     }
 
     public void deleteById(UUID id) {

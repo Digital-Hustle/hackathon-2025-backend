@@ -10,9 +10,11 @@ import java.util.UUID;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record RouteWithPlacesRs(
+
         UUID id,
 
         UUID profileId,
 
-        List<PlaceDto> places) {
+        List<PlaceDto> places
+) {
 }

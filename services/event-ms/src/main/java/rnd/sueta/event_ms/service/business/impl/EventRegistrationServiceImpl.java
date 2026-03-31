@@ -16,12 +16,11 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
 
     private final EventService eventService;
     private final PlaceService placeService;
-    private final PlaceValidator placeValidator;
 
     @Override
     public Event createEvent(Event event) {
         boolean exists = placeService.exists(event.getPlaceId());
-        placeValidator.checkPlaceExistence(exists);
+        PlaceValidator.checkPlaceExistence(exists);
 
         return eventService.create(event);
     }
@@ -29,7 +28,7 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
     @Override
     public Event updateEvent(UUID id, Event event) {
         boolean exists = placeService.exists(event.getPlaceId());
-        placeValidator.checkPlaceExistence(exists);
+        PlaceValidator.checkPlaceExistence(exists);
 
         return eventService.update(id, event);
     }

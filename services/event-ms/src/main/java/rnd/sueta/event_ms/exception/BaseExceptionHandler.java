@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class BaseExceptionHandler {
+
     private final Clock clock;
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

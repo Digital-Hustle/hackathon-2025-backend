@@ -9,9 +9,12 @@ import java.util.UUID;
 
 @Builder(toBuilder = true)
 public record EventWithPlace(
+
         UUID eventId,
 
         UUID placeId,
+
+        UUID organizerId,
 
         BigDecimal latitude,
 
@@ -20,6 +23,12 @@ public record EventWithPlace(
         String title,
 
         EventType eventType,
+
+        Integer totalRating,
+
+        Integer reviewsAmount,
+
+        BigDecimal averageRating,
 
         OffsetDateTime eventStart,
 

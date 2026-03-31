@@ -20,14 +20,21 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 @Table(name = "events", schema = "event")
 public class Event {
+
     @Id
     private UUID id;
+
+    @Column(name = "organizer_id", nullable = false)
+    private UUID organizerId;
 
     @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "type", nullable = false)
     private EventType type;
+
+    @Column(name = "rating", precision = EventConstants.RATING_PRECISION, scale = EventConstants.RATING_SCALE)
+    private BigDecimal rating;
 
     @Column(name = "event_start", nullable = false)
     private OffsetDateTime eventStart;
@@ -43,4 +50,7 @@ public class Event {
 
     @Column(name = "place_id", nullable = false)
     private UUID placeId;
+
+    @Column(name = "recommended", nullable = false)
+    private Boolean recommended;
 }

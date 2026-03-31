@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DistanceCalculator {
+
     private static final int EARTH_RADIUS_KILOMETERS = 6371;
 
     /**
