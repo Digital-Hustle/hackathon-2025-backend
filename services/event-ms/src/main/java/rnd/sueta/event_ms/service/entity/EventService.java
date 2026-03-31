@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface EventService {
+
     Page<EventWithPlace> getAllByFilter(EventFilterParams eventFilterParams);
 
     List<EventWithPlace> getAllInRangeByCategories(Point startPoint, Point endPoint, List<EventType> categories);
@@ -20,6 +21,12 @@ public interface EventService {
     Event create(Event event);
 
     Event update(UUID id, Event event);
+
+    void incrementRating(UUID id, Integer newRate);
+
+    void updateRating(UUID id, Integer oldRate, Integer newRate);
+
+    void decrementRating(UUID id, Integer newRate);
 
     void delete(UUID id);
 

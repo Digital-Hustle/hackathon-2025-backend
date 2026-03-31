@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rnd.sueta.event_ms.helper.RatingHelper;
 import rnd.sueta.event_ms.model.PlaceWithCoordinates;
 import rnd.sueta.event_ms.model.entity.Point;
 import rnd.sueta.event_ms.repository.PlaceRepository;
@@ -19,8 +20,10 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class PlaceServiceImpl implements PlaceService {
+
     private final PlaceRepository placeRepository;
     private final PointValidator pointValidator;
+    private final RatingHelper ratingHelper;
 
     @Override
     public Page<PlaceWithCoordinates> getAll(int page, int size) {
@@ -36,8 +39,14 @@ public class PlaceServiceImpl implements PlaceService {
 
     @Override
     public PlaceWithCoordinates getById(UUID id) {
-        return placeRepository.findById(id)
+        PlaceWithCoordinates place = placeRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
+
+        double averageRating = ratingHelper.countAverage(place.totalRating(), place.reviewsAmount());
+
+        return place.toBuilder()
+                .averageRating(averageRating)
+                .build();
     }
 
     @Transactional
@@ -65,6 +74,21 @@ public class PlaceServiceImpl implements PlaceService {
                         .id(id)
                         .build()
         );
+    }
+
+    @Override
+    public void incrementRating(UUID id, Integer newRate) {
+        placeRepository.incrementRating(id, newRate);
+    }
+
+    @Override
+    public void updateRating(UUID id, Integer oldRate, Integer newRate) {
+        placeRepository.updateRating(id, oldRate, newRate);
+    }
+
+    @Override
+    public void decrementRating(UUID id, Integer oldRate) {
+        placeRepository.decrementRating(id, oldRate);
     }
 
     @Override

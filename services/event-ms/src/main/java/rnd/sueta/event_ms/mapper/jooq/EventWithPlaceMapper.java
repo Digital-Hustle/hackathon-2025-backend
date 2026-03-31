@@ -18,6 +18,8 @@ public class EventWithPlaceMapper implements RecordMapper<Record, EventWithPlace
                 .longitude(record.get(Tables.POINTS.LONGITUDE))
                 .title(record.get(Tables.EVENTS.TITLE))
                 .eventType(EventType.valueOf(record.get(Tables.EVENTS.TYPE)))
+                .totalRating(record.get(Tables.PLACES.TOTAL_RATING))
+                .reviewsAmount(record.get(Tables.PLACES.REVIEWS_AMOUNT))
                 .eventStart(record.get(Tables.EVENTS.EVENT_START))
                 .eventEnd(record.get(Tables.EVENTS.EVENT_END))
                 .price(record.get(Tables.EVENTS.PRICE))

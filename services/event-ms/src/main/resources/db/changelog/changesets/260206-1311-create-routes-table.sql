@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS routes
 (
     id UUID PRIMARY KEY,
     profile_id UUID,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    date DATE
 );
 -- rollback DROP TABLE routes;

@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 @Component
 @RequiredArgsConstructor
 public final class PointValidator {
+
     private final BorderProperties borders;
 
     public void checkPointWithinCityArea(Point point) {

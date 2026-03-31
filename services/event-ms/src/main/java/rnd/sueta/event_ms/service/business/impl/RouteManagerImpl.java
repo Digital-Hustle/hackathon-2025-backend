@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import rnd.sueta.event_ms.config.ThreadLocalMap;
+import rnd.sueta.event_ms.constants.ContextKeys;
 import rnd.sueta.event_ms.model.EventWithPlace;
 import rnd.sueta.event_ms.model.PlaceWithCoordinates;
 import rnd.sueta.event_ms.model.RouteGenerationParams;
@@ -17,6 +19,7 @@ import rnd.sueta.event_ms.service.entity.PlaceService;
 import rnd.sueta.event_ms.service.entity.RouteService;
 import rnd.sueta.event_ms.util.DistanceCalculator;
 import rnd.sueta.event_ms.validator.PointValidator;
+import rnd.sueta.event_ms.validator.ProfileValidator;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -47,6 +50,10 @@ public class RouteManagerImpl implements RouteManager {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     @Override
     public RouteWithEvents generateRoute(RouteGenerationParams routeGenerationParams) {
+        String profileId = ThreadLocalMap.get(ContextKeys.PROFILE_ID);
+        ProfileValidator.checkProfileIdIsPresent(profileId);
+        ProfileValidator.checkProfileIdIsUuid(profileId);
+
         Point startRoutePoint = routeGenerationParams.startPoint();
         Point endRoutePoint = routeGenerationParams.endPoint();
 
@@ -66,7 +73,7 @@ public class RouteManagerImpl implements RouteManager {
             return distanceForFirstPlace.compareTo(distanceForSecondPlace);
         });
 
-        Route savedRoute = routeService.saveRouteWithPlaces(events, routeGenerationParams.profileId());
+        Route savedRoute = routeService.saveRouteWithPlaces(events, UUID.fromString(profileId));
         return RouteWithEvents.builder()
                 .id(savedRoute.getId())
                 .events(events)

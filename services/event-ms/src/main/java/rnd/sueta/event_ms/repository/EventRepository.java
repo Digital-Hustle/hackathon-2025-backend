@@ -22,6 +22,7 @@ import java.util.UUID;
 @Repository
 @RequiredArgsConstructor
 public class EventRepository {
+
     private final DSLContext dsl;
     private final EventWithPlaceMapper eventWithPlaceMapper;
 
@@ -84,13 +85,6 @@ public class EventRepository {
                 .map(eventWithPlaceMapper);
     }
 
-    public Optional<Event> findById(UUID id) {
-        return dsl.select()
-                .from(Tables.EVENTS)
-                .where(Tables.EVENTS.ID.eq(id))
-                .fetchOptionalInto(Event.class);
-    }
-
     public Optional<EventWithPlace> findEventWithPlaceByEventId(UUID id) {
         return dsl.select()
                 .from(Tables.EVENTS)
@@ -109,6 +103,29 @@ public class EventRepository {
                 .set(dsl.newRecord(Tables.EVENTS, event))
                 .returning()
                 .fetchOne(jooqRecord -> jooqRecord.into(Event.class));
+    }
+
+    public void incrementRating(UUID id, Integer newRate) {
+        dsl.update(Tables.EVENTS)
+                .set(Tables.EVENTS.TOTAL_RATING, Tables.EVENTS.TOTAL_RATING.plus(newRate))
+                .set(Tables.EVENTS.REVIEWS_AMOUNT, Tables.EVENTS.REVIEWS_AMOUNT.plus(1))
+                .where(Tables.EVENTS.ID.eq(id))
+                .execute();
+    }
+
+    public void updateRating(UUID id, Integer oldRate, Integer newRate) {
+        dsl.update(Tables.EVENTS)
+                .set(Tables.EVENTS.TOTAL_RATING, Tables.EVENTS.TOTAL_RATING.minus(oldRate).plus(newRate))
+                .where(Tables.EVENTS.ID.eq(id))
+                .execute();
+    }
+
+    public void decrementRating(UUID id, Integer oldRate) {
+        dsl.update(Tables.EVENTS)
+                .set(Tables.EVENTS.TOTAL_RATING, Tables.EVENTS.TOTAL_RATING.minus(oldRate))
+                .set(Tables.EVENTS.REVIEWS_AMOUNT, Tables.EVENTS.REVIEWS_AMOUNT.minus(1))
+                .where(Tables.EVENTS.ID.eq(id))
+                .execute();
     }
 
     public void deleteById(UUID id) {

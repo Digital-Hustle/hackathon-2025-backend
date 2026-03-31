@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Builder(toBuilder = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record PhotoMetaInfoDto(
+public record PhotoMetaDto(
         UUID id,
 
         String originalFileName,

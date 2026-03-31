@@ -13,10 +13,15 @@ import rnd.sueta.event_ms.model.entity.Event;
 
 @Mapper(config = BaseMapperConfig.class)
 public interface EventMapper {
+
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "rating", ignore = true)
+    @Mapping(target = "recommended", ignore = true)
     Event convert(CreateEventRq source);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "rating", ignore = true)
+    @Mapping(target = "recommended", ignore = true)
     Event convert(UpdateEventRq source);
 
     EventDto convert(Event source);

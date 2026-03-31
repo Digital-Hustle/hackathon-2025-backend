@@ -11,9 +11,12 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record EventWithPlaceDto(
+
         UUID eventId,
 
         UUID placeId,
+
+        UUID organizerId,
 
         BigDecimal latitude,
 
@@ -22,6 +25,8 @@ public record EventWithPlaceDto(
         String title,
 
         EventType eventType,
+
+        BigDecimal averageRating,
 
         OffsetDateTime eventStart,
 

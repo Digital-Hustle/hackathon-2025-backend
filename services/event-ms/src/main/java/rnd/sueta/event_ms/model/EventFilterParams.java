@@ -8,6 +8,7 @@ import java.util.List;
 
 @Builder(toBuilder = true)
 public record EventFilterParams(
+
         int page,
 
         int size,

@@ -20,7 +20,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @Table(name = "place_photos", schema = "event")
-public class PhotoMetaInfo {
+public class PhotoMeta {
+
     @Id
     private UUID id;
 

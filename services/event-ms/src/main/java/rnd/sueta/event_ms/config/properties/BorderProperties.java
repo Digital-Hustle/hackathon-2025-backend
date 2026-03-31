@@ -7,7 +7,7 @@ import rnd.sueta.event_ms.model.entity.Point;
 
 @Getter
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "app.city-coordinates")
+@ConfigurationProperties(prefix = "app.domain.city.coordinates")
 public class BorderProperties {
     private Point bottomLeftCorner;
     private Point topLeftCorner;
