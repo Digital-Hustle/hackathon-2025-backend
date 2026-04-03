@@ -2,15 +2,20 @@ package rnd.sueta.event_ms.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.generated.Tables;
+import org.jooq.impl.DSL;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import rnd.sueta.event_ms.constants.RecommendationConstants;
 import rnd.sueta.event_ms.enums.EventType;
 import rnd.sueta.event_ms.mapper.jooq.EventWithPlaceMapper;
 import rnd.sueta.event_ms.model.DateTimeRange;
+import rnd.sueta.event_ms.model.EventScoreParts;
 import rnd.sueta.event_ms.model.EventWithPlace;
+import rnd.sueta.event_ms.model.ItemWithScore;
 import rnd.sueta.event_ms.model.entity.Event;
 import rnd.sueta.event_ms.model.entity.Point;
 
@@ -26,6 +31,24 @@ public class EventRepository {
     private final DSLContext dsl;
     private final EventWithPlaceMapper eventWithPlaceMapper;
 
+    public Page<EventWithPlace> findAllEvents(Pageable pageable) {
+        Long total = dsl.selectCount()
+                .from(Tables.EVENTS)
+                .fetchOneInto(Long.class);
+
+        List<EventWithPlace> events = dsl.select()
+                .from(Tables.EVENTS)
+                .join(Tables.PLACES).on(Tables.PLACES.ID.eq(Tables.EVENTS.PLACE_ID))
+                .join(Tables.POINTS).on(Tables.POINTS.ID.eq(Tables.PLACES.POINT_ID))
+                .join(Tables.EVENT_SCORES).on(Tables.EVENTS.ID.eq(Tables.EVENT_SCORES.EVENT_ID))
+                .orderBy(Tables.EVENT_SCORES.SCORE.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchInto(EventWithPlace.class);
+
+        return new PageImpl<>(events, pageable, Objects.requireNonNullElse(total, 0L));
+    }
+
     public Page<EventWithPlace> findEventsWithPlaceByDate(DateTimeRange range, Pageable pageable) {
         Long total = dsl.selectCount()
                 .from(Tables.EVENTS)
@@ -39,8 +62,7 @@ public class EventRepository {
                 .where(Tables.EVENTS.EVENT_START.between(range.start(), range.end()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetch()
-                .map(eventWithPlaceMapper);
+                .fetchInto(EventWithPlace.class);
 
         return new PageImpl<>(events, pageable, Objects.requireNonNullElse(total, 0L));
     }
@@ -64,8 +86,7 @@ public class EventRepository {
                 .and(Tables.EVENTS.TYPE.in(categories))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetch()
-                .map(eventWithPlaceMapper);
+                .fetchInto(EventWithPlace.class);
 
         return new PageImpl<>(events, pageable, Objects.requireNonNullElse(total, 0L));
     }
@@ -81,8 +102,7 @@ public class EventRepository {
                 .where(Tables.POINTS.LATITUDE.between(startPoint.getLatitude(), endPoint.getLatitude()))
                 .and(Tables.POINTS.LONGITUDE.between(startPoint.getLongitude(), endPoint.getLongitude()))
                 .and(Tables.EVENTS.TYPE.in(categories))
-                .fetch()
-                .map(eventWithPlaceMapper);
+                .fetchInto(EventWithPlace.class);
     }
 
     public Optional<EventWithPlace> findEventWithPlaceByEventId(UUID id) {
@@ -91,8 +111,43 @@ public class EventRepository {
                 .join(Tables.PLACES).on(Tables.PLACES.ID.eq(Tables.EVENTS.PLACE_ID))
                 .join(Tables.POINTS).on(Tables.POINTS.ID.eq(Tables.PLACES.POINT_ID))
                 .where(Tables.EVENTS.ID.eq(id))
-                .fetchOptional()
-                .map(eventWithPlaceMapper);
+                .fetchOptionalInto(EventWithPlace.class);
+    }
+
+    public List<ItemWithScore<EventWithPlace>> findTopWithScores() {
+        return dsl.select(
+                        Tables.EVENTS.asterisk(),
+                        Tables.POINTS.LONGITUDE,
+                        Tables.POINTS.LATITUDE,
+                        Tables.PLACES.TOTAL_RATING,
+                        Tables.PLACES.TOTAL_RATING,
+                        Tables.PLACES.ID.as("placeId"),
+                        Tables.EVENT_SCORES.SCORE
+                )
+                .from(Tables.EVENTS)
+                .join(Tables.PLACES).on(Tables.PLACES.ID.eq(Tables.EVENTS.PLACE_ID))
+                .join(Tables.POINTS).on(Tables.POINTS.ID.eq(Tables.PLACES.POINT_ID))
+                .join(Tables.EVENT_SCORES).on(Tables.EVENTS.ID.eq(Tables.EVENT_SCORES.EVENT_ID))
+                .orderBy(Tables.EVENT_SCORES.SCORE.desc())
+                .limit(RecommendationConstants.TOP_SIZE)
+                .fetch()
+                .map(eventWithPlaceMapper::mapWithScore);
+    }
+
+    public EventScoreParts findScoreParts(UUID id) {
+        Field<Integer> maxReviews = DSL.field(DSL.select(DSL.coalesce(DSL.max(Tables.EVENTS.REVIEWS_AMOUNT), 0))
+                .from(Tables.EVENTS)).as("maxReviews");
+
+        return dsl.select(
+                        Tables.EVENTS.TOTAL_RATING,
+                        Tables.EVENTS.REVIEWS_AMOUNT,
+                        Tables.EVENTS.EVENT_START,
+                        Tables.EVENTS.EVENT_END,
+                        Tables.EVENTS.RECOMMENDED,
+                        maxReviews)
+                .from(Tables.EVENTS)
+                .where(Tables.EVENTS.ID.eq(id))
+                .fetchOneInto(EventScoreParts.class);
     }
 
     public Event save(Event event) {
@@ -102,7 +157,12 @@ public class EventRepository {
                 .doUpdate()
                 .set(dsl.newRecord(Tables.EVENTS, event))
                 .returning()
-                .fetchOne(jooqRecord -> jooqRecord.into(Event.class));
+                .fetchOneInto(Event.class);
+    }
+
+    public void refreshEvents() {
+        dsl.execute(RecommendationConstants.REFRESH_MATERIALIZED_VIEW_CONCURRENTLY
+                .formatted(RecommendationConstants.EVENT_SCORES_MAT_VIEW_NAME));
     }
 
     public void incrementRating(UUID id, Integer newRate) {

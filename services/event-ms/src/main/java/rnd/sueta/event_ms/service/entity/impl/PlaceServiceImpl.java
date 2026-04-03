@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rnd.sueta.event_ms.helper.RatingHelper;
+import rnd.sueta.event_ms.model.ItemWithScore;
+import rnd.sueta.event_ms.model.PlaceScoreParts;
 import rnd.sueta.event_ms.model.PlaceWithCoordinates;
 import rnd.sueta.event_ms.model.entity.Point;
 import rnd.sueta.event_ms.repository.PlaceRepository;
@@ -33,6 +35,11 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     @Override
+    public List<ItemWithScore<PlaceWithCoordinates>> getTopWithScores() {
+        return placeRepository.findTopWithScores();
+    }
+
+    @Override
     public List<PlaceWithCoordinates> getByRouteId(UUID routeId) {
         return placeRepository.findAllByRouteId(routeId);
     }
@@ -47,6 +54,16 @@ public class PlaceServiceImpl implements PlaceService {
         return place.toBuilder()
                 .averageRating(averageRating)
                 .build();
+    }
+
+    @Override
+    public PlaceScoreParts getScorePartsById(UUID id) {
+        return placeRepository.findScoreParts(id);
+    }
+
+    @Override
+    public boolean exists(UUID id) {
+        return placeRepository.existsById(id);
     }
 
     @Transactional
@@ -68,12 +85,23 @@ public class PlaceServiceImpl implements PlaceService {
 
     @Transactional
     @Override
-    public PlaceWithCoordinates update(UUID id, PlaceWithCoordinates place) {
-        return placeRepository.save(
-                place.toBuilder()
-                        .id(id)
-                        .build()
-        );
+    public PlaceWithCoordinates update(PlaceWithCoordinates place) {
+        PlaceWithCoordinates dbPlace = getById(place.id());
+
+        dbPlace = dbPlace.toBuilder()
+                .title(place.title())
+                .type(place.type())
+                .ownerId(place.ownerId())
+                .recommended(place.recommended())
+                .contacts(place.contacts())
+                .build();
+
+        return placeRepository.save(dbPlace);
+    }
+
+    @Override
+    public void refreshTop() {
+        placeRepository.refreshTopPlaces();
     }
 
     @Override
@@ -94,10 +122,5 @@ public class PlaceServiceImpl implements PlaceService {
     @Override
     public void delete(UUID id) {
         placeRepository.deleteById(id);
-    }
-
-    @Override
-    public boolean exists(UUID id) {
-        return placeRepository.existsById(id);
     }
 }

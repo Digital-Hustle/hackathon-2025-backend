@@ -11,6 +11,8 @@ import rnd.sueta.event_ms.dto.request.UpdateEventRq;
 import rnd.sueta.event_ms.model.EventWithPlace;
 import rnd.sueta.event_ms.model.entity.Event;
 
+import java.util.UUID;
+
 @Mapper(config = BaseMapperConfig.class)
 public interface EventMapper {
 
@@ -31,4 +33,12 @@ public interface EventMapper {
     default Page<EventWithPlaceDto> convert(Page<EventWithPlace> source) {
         return source.map(this::convert);
     }
+
+    @Mapping(target = "latitude", ignore = true)
+    @Mapping(target = "longitude", ignore = true)
+    @Mapping(target = "type", ignore = true)
+    @Mapping(target = "totalRating", ignore = true)
+    @Mapping(target = "reviewsAmount", ignore = true)
+    @Mapping(target = "averageRating", ignore = true)
+    EventWithPlace convertWithPlace(UUID id, UpdateEventRq source);
 }

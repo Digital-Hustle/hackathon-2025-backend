@@ -10,6 +10,7 @@ import rnd.sueta.event_ms.dto.request.UpdatePlaceRq;
 import rnd.sueta.event_ms.model.PlaceWithCoordinates;
 
 import java.util.List;
+import java.util.UUID;
 
 @Mapper(config = BaseMapperConfig.class)
 public interface PlaceMapper {
@@ -20,24 +21,28 @@ public interface PlaceMapper {
     @Mapping(target = "averageRating", ignore = true)
     @Mapping(target = "reviewsAmount", ignore = true)
     @Mapping(target = "totalVisits", ignore = true)
+    @Mapping(target = "recommended", ignore = true)
     @Mapping(target = "contacts.mobileNumbers", source = "mobileNumbers")
     @Mapping(target = "contacts.email", source = "email")
     @Mapping(target = "contacts.websiteUrl", source = "websiteUrl")
     @Mapping(target = "contacts.social", source = "social")
     PlaceWithCoordinates convert(CreatePlaceRq source);
 
-    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "pointId", ignore = true)
     @Mapping(target = "address", ignore = true)
     @Mapping(target = "totalRating", ignore = true)
     @Mapping(target = "averageRating", ignore = true)
     @Mapping(target = "reviewsAmount", ignore = true)
     @Mapping(target = "totalVisits", ignore = true)
-    @Mapping(target = "ownerId", ignore = true)
-    @Mapping(target = "contacts", ignore = true)
+    @Mapping(target = "recommended", ignore = true)
     @Mapping(target = "longitude", ignore = true)
     @Mapping(target = "latitude", ignore = true)
-    PlaceWithCoordinates convert(UpdatePlaceRq source);
+    @Mapping(target = "contacts.mobileNumbers", source = "source.mobileNumbers")
+    @Mapping(target = "contacts.email", source = "source.email")
+    @Mapping(target = "contacts.websiteUrl", source = "source.websiteUrl")
+    @Mapping(target = "contacts.social", source = "source.social")
+    PlaceWithCoordinates convert(UUID id, UpdatePlaceRq source);
 
     @Mapping(target = "mobileNumbers", source = "contacts.mobileNumbers")
     @Mapping(target = "email", source = "contacts.email")

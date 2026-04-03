@@ -56,7 +56,7 @@ public abstract class AbstractReviewRepository {
                 .doUpdate()
                 .set(dsl.newRecord(Tables.REVIEWS, review))
                 .returning()
-                .fetchOne(jooqRecord -> jooqRecord.into(Review.class));
+                .fetchOneInto(Review.class);
 
         dsl.insertInto(joinTable.table())
                 .set(joinTable.linkedTableId(), review.getId())

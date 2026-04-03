@@ -26,6 +26,8 @@ public record PlaceWithCoordinates(
 
         Integer totalVisits,
 
+        Boolean recommended,
+
         UUID ownerId,
 
         UUID pointId,

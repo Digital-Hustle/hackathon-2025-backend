@@ -2,7 +2,6 @@ package rnd.sueta.event_ms.controller.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import rnd.sueta.event_ms.controller.EventController;
@@ -29,11 +28,11 @@ import rnd.sueta.event_ms.model.PhotoWithUrl;
 import rnd.sueta.event_ms.model.entity.Event;
 import rnd.sueta.event_ms.model.entity.PhotoMeta;
 import rnd.sueta.event_ms.model.entity.Review;
+import rnd.sueta.event_ms.service.business.CacheProvider;
 import rnd.sueta.event_ms.service.business.EventRegistrationService;
 import rnd.sueta.event_ms.service.business.PhotoManager;
 import rnd.sueta.event_ms.service.business.ReviewRegistrator;
 import rnd.sueta.event_ms.service.entity.EventService;
-import rnd.sueta.event_ms.service.entity.RecommendationService;
 
 import java.util.UUID;
 
@@ -45,7 +44,7 @@ public class EventControllerImpl implements EventController {
     private final PhotoManager eventPhotoManager;
     private final ReviewRegistrator eventReviewRegistrator;
     private final EventRegistrationService eventRegistrationService;
-    private final RecommendationService recommendationService;
+    private final CacheProvider<EventWithPlace> cacheProvider;
 
     private final EventMapper eventMapper;
     private final PhotoMapper photoMapper;
@@ -65,12 +64,12 @@ public class EventControllerImpl implements EventController {
                 .build();
     }
 
-    @GetMapping("/recommended")
-    public GetEventsWithPlacesRs getAllRecommended(PaginationFilter paginationFilter) {
-        Page<EventWithPlace> places = recommendationService.getAllEvents(paginationFilter.page(), paginationFilter.size());
+    @Override
+    public GetEventsWithPlacesRs getTop(PaginationFilter paginationFilter) {
+        Page<EventWithPlace> events = cacheProvider.getTop(paginationFilter.page(), paginationFilter.size());
 
         return GetEventsWithPlacesRs.builder()
-                .places(eventMapper.convert(places))
+                .places(eventMapper.convert(events))
                 .build();
     }
 
@@ -98,7 +97,7 @@ public class EventControllerImpl implements EventController {
 
     @Override
     public EventWithPlaceDto getById(UUID id) {
-        return eventMapper.convert(eventService.getEventWithPlaceById(id));
+        return eventMapper.convert(cacheProvider.getById(id));
     }
 
     @Override
@@ -130,26 +129,26 @@ public class EventControllerImpl implements EventController {
     }
 
     @Override
-    public EventDto update(UUID id, UpdateEventRq updateEventRq) {
-        Event event = eventMapper.convert(updateEventRq);
+    public EventWithPlaceDto update(UUID id, UpdateEventRq updateEventRq) {
+        EventWithPlace event = eventMapper.convertWithPlace(id, updateEventRq);
 
-        return eventMapper.convert(eventRegistrationService.updateEvent(id, event));
+        return eventMapper.convert(cacheProvider.update(event));
     }
 
     @Override
     public ReviewDto updateReview(UUID id, UUID reviewId, UpdateReviewRq updatereviewRq) {
-        Review review = reviewMapper.convert(updatereviewRq);
+        Review review = reviewMapper.convert(reviewId, updatereviewRq);
 
         review = review.toBuilder()
                 .id(reviewId)
                 .build();
 
-        return reviewMapper.convert(eventReviewRegistrator.update(id, reviewId, review));
+        return reviewMapper.convert(eventReviewRegistrator.update(id, review));
     }
 
     @Override
     public void delete(UUID id) {
-        eventService.delete(id);
+        cacheProvider.delete(id);
     }
 
     @Override

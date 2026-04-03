@@ -7,5 +7,6 @@ import rnd.sueta.event_ms.model.EventFilterParams;
 
 @Mapper(config = BaseMapperConfig.class)
 public interface RequestParamsMapper {
+
     EventFilterParams convert(EventsFilter eventsFilter, int page, int size);
 }

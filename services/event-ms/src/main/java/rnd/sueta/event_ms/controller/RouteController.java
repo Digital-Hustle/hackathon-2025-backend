@@ -8,18 +8,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import rnd.sueta.event_ms.constants.UrlPaths;
 import rnd.sueta.event_ms.dto.request.CreateRouteRq;
 import rnd.sueta.event_ms.dto.response.RouteWithDetailsRs;
 import rnd.sueta.event_ms.dto.response.RouteWithPlacesRs;
 
 import java.util.UUID;
 
-@RequestMapping("/api/v1/routes")
+@RequestMapping(UrlPaths.ROUTES)
 public interface RouteController {
-    @GetMapping("/{id}")
+
+    @GetMapping(UrlPaths.BY_ID)
     RouteWithPlacesRs getById(@PathVariable UUID id);
 
-    @PostMapping("/generate")
+    @PostMapping(UrlPaths.ROUTES_GENERATE)
     @ResponseStatus(HttpStatus.CREATED)
     RouteWithDetailsRs generateRoute(@RequestBody @Valid CreateRouteRq createRouteRq);
 }

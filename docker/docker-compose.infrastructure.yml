@@ -47,10 +47,29 @@ services:
     networks:
       - tourist-helper-network
 
+  redis:
+    image: redis:8.6.2-alpine
+    container_name: redis-container
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - tourist-helper-network
+    environment:
+      - REDIS_PASSWORD=root
+    command:
+      - redis-server
+      - "--requirepass"
+      - "${REDIS_PASSWORD}"
+      - "--appendonly"
+      - "yes"
+    restart: unless-stopped
+
 networks:
   tourist-helper-network:
     external: true
 volumes:
   postgres-volume:
   minio-volume:
-  rabbitmq-volume:
+  redis_data:

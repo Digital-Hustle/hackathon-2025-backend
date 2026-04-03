@@ -20,7 +20,7 @@ public final class DistanceCalculator {
      * (по большому кругу) между двумя точками на сфере (Земле) по их широте и долготе.
      *
      * <p>
-     * <img src="../../../../../../../../../docs/haversinus_formula.png"
+     * <img src="../../../../../../../../../docs/formulas/haversinus_formula.png"
      * width="550"
      * alt="Haversinus formula example at project_root/docs/haversinus_formula.png"/>
      *

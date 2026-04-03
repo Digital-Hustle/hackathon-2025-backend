@@ -2,12 +2,17 @@ package rnd.sueta.event_ms.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.generated.Tables;
+import org.jooq.impl.DSL;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import rnd.sueta.event_ms.constants.RecommendationConstants;
 import rnd.sueta.event_ms.mapper.jooq.PlaceWithCoordinatesMapper;
+import rnd.sueta.event_ms.model.ItemWithScore;
+import rnd.sueta.event_ms.model.PlaceScoreParts;
 import rnd.sueta.event_ms.model.PlaceWithCoordinates;
 import rnd.sueta.event_ms.model.entity.Point;
 
@@ -32,10 +37,21 @@ public class PlaceRepository {
                 .on(Tables.POINTS.ID.eq(Tables.PLACES.POINT_ID))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetch()
-                .map(placeWithCoordinatesMapper);
+                .fetchInto(PlaceWithCoordinates.class);
 
         return new PageImpl<>(places, pageable, total);
+    }
+
+    public List<ItemWithScore<PlaceWithCoordinates>> findTopWithScores() {
+        return dsl.select()
+                .from(Tables.PLACES)
+                .join(Tables.POINTS)
+                .on(Tables.POINTS.ID.eq(Tables.PLACES.POINT_ID))
+                .join(Tables.PLACE_SCORES)
+                .on(Tables.PLACES.ID.eq(Tables.PLACE_SCORES.PLACE_ID))
+                .orderBy(Tables.PLACE_SCORES.SCORE.desc())
+                .limit(RecommendationConstants.TOP_SIZE)
+                .fetch(placeWithCoordinatesMapper::mapWithScore);
     }
 
     public List<PlaceWithCoordinates> findAllByRouteId(UUID routeId) {
@@ -46,8 +62,7 @@ public class PlaceRepository {
                 .join(Tables.POINTS)
                 .on(Tables.POINTS.ID.eq(Tables.PLACES.POINT_ID))
                 .where(Tables.ROUTE_PLACES.ROUTE_ID.eq(routeId))
-                .fetch()
-                .map(placeWithCoordinatesMapper);
+                .fetchInto(PlaceWithCoordinates.class);
     }
 
     public Optional<PlaceWithCoordinates> findById(UUID id) {
@@ -56,8 +71,28 @@ public class PlaceRepository {
                 .join(Tables.POINTS)
                 .on(Tables.POINTS.ID.eq(Tables.PLACES.POINT_ID))
                 .where(Tables.PLACES.ID.eq(id))
-                .fetchOptional()
-                .map(placeWithCoordinatesMapper);
+                .fetchOptionalInto(PlaceWithCoordinates.class);
+    }
+
+    public PlaceScoreParts findScoreParts(UUID id) {
+        Field<Integer> maxVisits = DSL.field(DSL.select(DSL.coalesce(DSL.max(Tables.PLACES.TOTAL_VISITS), 0))
+                .from(Tables.PLACES)).as("maxVisits");
+
+        return dsl.select(
+                        Tables.PLACES.TOTAL_RATING,
+                        Tables.PLACES.REVIEWS_AMOUNT,
+                        Tables.PLACES.TOTAL_VISITS,
+                        Tables.PLACES.RECOMMENDED,
+                        maxVisits)
+                .from(Tables.PLACES)
+                .where(Tables.PLACES.ID.eq(id))
+                .fetchOneInto(PlaceScoreParts.class);
+    }
+
+    public boolean existsById(UUID id) {
+        return dsl.fetchExists(dsl.selectOne()
+                .from(Tables.PLACES)
+                .where(Tables.PLACES.ID.eq(id)));
     }
 
     public PlaceWithCoordinates save(PlaceWithCoordinates place) {
@@ -79,6 +114,11 @@ public class PlaceRepository {
                 .execute();
 
         return place;
+    }
+
+    public void refreshTopPlaces() {
+        dsl.execute(RecommendationConstants.REFRESH_MATERIALIZED_VIEW_CONCURRENTLY
+                .formatted(RecommendationConstants.PLACE_SCORES_MAT_VIEW_NAME));
     }
 
     public void incrementRating(UUID id, Integer newRate) {
@@ -110,12 +150,6 @@ public class PlaceRepository {
                 .execute();
     }
 
-    public boolean existsById(UUID id) {
-        return dsl.fetchExists(dsl.selectOne()
-                .from(Tables.PLACES)
-                .where(Tables.PLACES.ID.eq(id)));
-    }
-
     private Point insertPoint(PlaceWithCoordinates place) {
         Point point = Point.builder()
                 .id(UUID.randomUUID())
@@ -128,7 +162,7 @@ public class PlaceRepository {
                 .onConflict()
                 .doNothing()
                 .returning()
-                .fetchOne(jooqRecord -> jooqRecord.into(Point.class));
+                .fetchOneInto(Point.class);
     }
 
     private Point getPoint(BigDecimal latitude, BigDecimal longitude) {

@@ -2,6 +2,12 @@ spring:
   application:
     name: event-ms
 
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 60000
+    password: root
+
   cloud:
     config:
       uri: http://localhost:5000
@@ -9,3 +15,9 @@ spring:
   config:
     import: "configserver:"
 
+app:
+  domain:
+    event:
+      recommendation:
+        lock-at-most-for: PT5M
+        lock-at-least-for: PT1M

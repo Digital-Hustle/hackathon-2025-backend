@@ -67,6 +67,8 @@ val jooqVersion = "3.19.13"
 val jacksonDatabindVersion = "2.15.2"
 val liquibaseVersion = "4.33.0"
 val mapstructVersion = "1.6.3"
+val shedlockVersion = "7.6.0"
+val shedlockProviderVersion = "7.6.0"
 val apacheCommonsIoVersion = "2.21.0"
 val apacheCommonsValidatorVersion = "1.10.0"
 val libphonenumberVersion = "9.0.24"
@@ -109,6 +111,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-jooq")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
     // cloud starters
     implementation("org.springframework.cloud:spring-cloud-starter-config")
@@ -133,6 +137,10 @@ dependencies {
     liquibaseRuntime("org.liquibase:liquibase-core:$liquibaseVersion")
     liquibaseRuntime("org.liquibase:liquibase-commercial:$liquibaseVersion")
     liquibaseRuntime("info.picocli:picocli:4.7.5")
+
+    // shedlock
+    implementation("net.javacrumbs.shedlock:shedlock-spring:$shedlockVersion")
+    implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:$shedlockProviderVersion")
 
     // mapper
     implementation("org.mapstruct:mapstruct:$mapstructVersion")
@@ -285,6 +293,12 @@ tasks.withType<Test> {
 
 tasks.withType<Checkstyle>().configureEach {
     dependsOn("createCheckstyleCache")
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+    // для маппинга record у jooq
+    options.compilerArgs.add("-parameters")
 }
 
 tasks.named<Checkstyle>("checkstyleMain") {

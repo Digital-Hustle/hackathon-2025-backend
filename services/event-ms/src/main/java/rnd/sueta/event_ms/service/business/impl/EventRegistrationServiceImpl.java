@@ -2,13 +2,12 @@ package rnd.sueta.event_ms.service.business.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import rnd.sueta.event_ms.model.EventWithPlace;
 import rnd.sueta.event_ms.model.entity.Event;
 import rnd.sueta.event_ms.service.business.EventRegistrationService;
 import rnd.sueta.event_ms.service.entity.EventService;
 import rnd.sueta.event_ms.service.entity.PlaceService;
 import rnd.sueta.event_ms.validator.PlaceValidator;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,10 +25,10 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
     }
 
     @Override
-    public Event updateEvent(UUID id, Event event) {
-        boolean exists = placeService.exists(event.getPlaceId());
+    public EventWithPlace updateEvent(EventWithPlace event) {
+        boolean exists = placeService.exists(event.placeId());
         PlaceValidator.checkPlaceExistence(exists);
 
-        return eventService.update(id, event);
+        return eventService.update(event);
     }
 }

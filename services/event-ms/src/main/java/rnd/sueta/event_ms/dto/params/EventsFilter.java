@@ -10,6 +10,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 public record EventsFilter(
+
         @NotNull(message = "date " + ValidationErrorMessages.IS_REQUIRED)
         OffsetDateTime date,
 

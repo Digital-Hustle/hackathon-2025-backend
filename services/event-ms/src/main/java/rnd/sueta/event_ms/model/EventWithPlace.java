@@ -10,7 +10,7 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 public record EventWithPlace(
 
-        UUID eventId,
+        UUID id,
 
         UUID placeId,
 
@@ -22,7 +22,7 @@ public record EventWithPlace(
 
         String title,
 
-        EventType eventType,
+        EventType type,
 
         Integer totalRating,
 

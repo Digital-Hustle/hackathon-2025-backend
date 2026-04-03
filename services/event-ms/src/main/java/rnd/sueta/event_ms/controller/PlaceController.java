@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
+import rnd.sueta.event_ms.constants.UrlPaths;
 import rnd.sueta.event_ms.dto.PhotoMetaDto;
 import rnd.sueta.event_ms.dto.PlaceDto;
 import rnd.sueta.event_ms.dto.ReviewDto;
@@ -25,51 +26,54 @@ import rnd.sueta.event_ms.dto.response.GetReviewsRs;
 
 import java.util.UUID;
 
-@RequestMapping("/api/v1/places")
+@RequestMapping(UrlPaths.PLACES)
 public interface PlaceController {
 
     @GetMapping
     GetPlacesRs getAll(@Valid PaginationFilter paginationFilter);
 
-    @GetMapping("/{id}/photos")
+    @GetMapping(UrlPaths.RECOMMENDATIONS)
+    GetPlacesRs getTop(@Valid PaginationFilter paginationFilter);
+
+    @GetMapping(UrlPaths.PHOTOS)
     GetPhotosMetaWithUrlRs getAllByOwnerId(@PathVariable UUID id, @Valid PaginationFilter paginationFilter);
 
-    @GetMapping("/{id}/reviews")
+    @GetMapping(UrlPaths.REVIEWS)
     GetReviewsRs getAllReviewsByOwnerId(@PathVariable UUID id, @Valid PaginationFilter paginationFilter);
 
-    @GetMapping("/{id}")
+    @GetMapping(UrlPaths.BY_ID)
     PlaceDto getById(@PathVariable UUID id);
 
-    @GetMapping("/{id}/reviews/{reviewId}")
+    @GetMapping(UrlPaths.REVIEW_BY_ID)
     ReviewDto getReviewById(@PathVariable UUID reviewId);
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     PlaceDto create(@RequestBody @Valid CreatePlaceRq createPlaceRq);
 
-    @PostMapping("/{id}/photos")
+    @PostMapping(UrlPaths.PHOTOS)
     @ResponseStatus(HttpStatus.CREATED)
     PhotoMetaDto uploadPhoto(@PathVariable UUID id, MultipartFile photo);
 
-    @PostMapping("/{id}/reviews")
+    @PostMapping(UrlPaths.REVIEWS)
     @ResponseStatus(HttpStatus.CREATED)
     ReviewDto createReview(@PathVariable UUID id, @RequestBody @Valid CreateReviewRq createReviewRq);
 
-    @PutMapping("/{id}")
+    @PutMapping(UrlPaths.BY_ID)
     PlaceDto update(@PathVariable UUID id, @RequestBody @Valid UpdatePlaceRq updatePlaceRq);
 
-    @PutMapping("/{id}/reviews/{reviewId}")
+    @PutMapping(UrlPaths.REVIEW_BY_ID)
     ReviewDto updateReview(@PathVariable UUID id, @PathVariable UUID reviewId, @RequestBody @Valid UpdateReviewRq updatereviewRq);
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(UrlPaths.BY_ID)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void delete(@PathVariable UUID id);
 
-    @DeleteMapping("/{id}/photos/{linkedTableId}")
+    @DeleteMapping(UrlPaths.PHOTO_BY_ID)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deletePhoto(@PathVariable UUID photoId);
 
-    @DeleteMapping("/{id}/reviews/{reviewId}")
+    @DeleteMapping(UrlPaths.REVIEW_BY_ID)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteReview(@PathVariable UUID id, @PathVariable UUID reviewId);
 }
