@@ -2,7 +2,6 @@ package rnd.sueta.event_ms.controller.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import rnd.sueta.event_ms.controller.PlaceController;
@@ -24,10 +23,10 @@ import rnd.sueta.event_ms.model.PhotoWithUrl;
 import rnd.sueta.event_ms.model.PlaceWithCoordinates;
 import rnd.sueta.event_ms.model.entity.PhotoMeta;
 import rnd.sueta.event_ms.model.entity.Review;
+import rnd.sueta.event_ms.service.business.CacheProvider;
 import rnd.sueta.event_ms.service.business.PhotoManager;
 import rnd.sueta.event_ms.service.business.ReviewRegistrator;
 import rnd.sueta.event_ms.service.entity.PlaceService;
-import rnd.sueta.event_ms.service.entity.RecommendationService;
 
 import java.util.UUID;
 
@@ -38,7 +37,7 @@ public class PlaceControllerImpl implements PlaceController {
     private final PlaceService placeService;
     private final PhotoManager placePhotoManager;
     private final ReviewRegistrator placeReviewRegistrator;
-    private final RecommendationService recommendationService;
+    private final CacheProvider<PlaceWithCoordinates> cacheProvider;
 
     private final PlaceMapper placeMapper;
     private final PhotoMapper photoMapper;
@@ -53,9 +52,9 @@ public class PlaceControllerImpl implements PlaceController {
                 .build();
     }
 
-    @GetMapping("/recommended")
-    public GetPlacesRs getAllRecommended(PaginationFilter paginationFilter) {
-        Page<PlaceWithCoordinates> places = recommendationService.getAllPlaces(paginationFilter.page(), paginationFilter.size());
+    @Override
+    public GetPlacesRs getTop(PaginationFilter paginationFilter) {
+        Page<PlaceWithCoordinates> places = cacheProvider.getTop(paginationFilter.page(), paginationFilter.size());
 
         return GetPlacesRs.builder()
                 .places(placeMapper.convert(places))
@@ -86,7 +85,7 @@ public class PlaceControllerImpl implements PlaceController {
 
     @Override
     public PlaceDto getById(UUID id) {
-        return placeMapper.convert(placeService.getById(id));
+        return placeMapper.convert(cacheProvider.getById(id));
     }
 
     @Override
@@ -120,21 +119,21 @@ public class PlaceControllerImpl implements PlaceController {
 
     @Override
     public PlaceDto update(UUID id, UpdatePlaceRq updatePlaceRq) {
-        PlaceWithCoordinates place = placeMapper.convert(updatePlaceRq);
+        PlaceWithCoordinates place = placeMapper.convert(id, updatePlaceRq);
 
-        return placeMapper.convert(placeService.update(id, place));
+        return placeMapper.convert(cacheProvider.update(place));
     }
 
     @Override
     public ReviewDto updateReview(UUID id, UUID reviewId, UpdateReviewRq updatereviewRq) {
-        Review review = reviewMapper.convert(updatereviewRq);
+        Review review = reviewMapper.convert(reviewId, updatereviewRq);
 
-        return reviewMapper.convert(placeReviewRegistrator.update(id, reviewId, review));
+        return reviewMapper.convert(placeReviewRegistrator.update(id, review));
     }
 
     @Override
     public void delete(UUID id) {
-        placeService.delete(id);
+        cacheProvider.delete(id);
     }
 
     @Override

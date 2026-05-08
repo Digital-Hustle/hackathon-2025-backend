@@ -56,6 +56,5 @@ public class MinioGatewayImpl implements MinioGateway {
         } catch (IOException | MinioException | NoSuchAlgorithmException | InvalidKeyException exception) {
             throw new PhotoProcessingException(PhotoErrorMessages.FAILED_TO_DELETE_PHOTO);
         }
-
     }
 }

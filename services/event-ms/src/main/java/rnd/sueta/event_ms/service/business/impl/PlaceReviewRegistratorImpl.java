@@ -39,15 +39,10 @@ public class PlaceReviewRegistratorImpl implements ReviewRegistrator {
 
     @Transactional
     @Override
-    public Review update(UUID ownerId, UUID reviewId, Review review) {
-        Integer oldRate = placeReviewService.getRateById(reviewId);
+    public Review update(UUID ownerId, Review review) {
+        Integer oldRate = placeReviewService.getRateById(review.getId());
 
-        Review updatedReview = placeReviewService.update(
-                ownerId,
-                review.toBuilder()
-                        .id(reviewId)
-                        .build()
-        );
+        Review updatedReview = placeReviewService.update(ownerId, review);
         placeService.updateRating(ownerId, oldRate, updatedReview.getRate());
 
         return updatedReview;

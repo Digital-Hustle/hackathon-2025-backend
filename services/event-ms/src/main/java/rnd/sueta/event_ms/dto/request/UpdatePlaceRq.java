@@ -20,7 +20,7 @@ public record UpdatePlaceRq(
         @Size(max = PlaceConstants.MAX_TITLE_LENGTH, message = "title " + ValidationErrorMessages.STRING_IS_TOO_LONG)
         String title,
 
-        @NotNull(message = "eventType " + ValidationErrorMessages.IS_REQUIRED)
+        @NotNull(message = "type " + ValidationErrorMessages.IS_REQUIRED)
         PlaceType type,
 
         @NotNull(message = "ownerId " + ValidationErrorMessages.IS_REQUIRED)

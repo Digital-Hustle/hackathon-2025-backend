@@ -24,7 +24,7 @@ public record CreateEventRq(
         @NotNull(message = "organizerId " + ValidationErrorMessages.IS_REQUIRED)
         UUID organizerId,
 
-        @NotNull(message = "eventType " + ValidationErrorMessages.IS_REQUIRED)
+        @NotNull(message = "type " + ValidationErrorMessages.IS_REQUIRED)
         EventType type,
 
         @NotNull(message = "eventStart " + ValidationErrorMessages.IS_REQUIRED)

@@ -12,7 +12,7 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record EventWithPlaceDto(
 
-        UUID eventId,
+        UUID id,
 
         UUID placeId,
 
@@ -24,7 +24,7 @@ public record EventWithPlaceDto(
 
         String title,
 
-        EventType eventType,
+        EventType type,
 
         BigDecimal averageRating,
 

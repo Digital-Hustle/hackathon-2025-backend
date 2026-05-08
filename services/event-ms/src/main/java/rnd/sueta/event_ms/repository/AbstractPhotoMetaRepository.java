@@ -49,7 +49,7 @@ public abstract class AbstractPhotoMetaRepository {
                 .doUpdate()
                 .set(dsl.newRecord(Tables.PHOTOS, photoMeta))
                 .returning()
-                .fetchOne(jooqRecord -> jooqRecord.into(PhotoMeta.class));
+                .fetchOneInto(PhotoMeta.class);
 
         dsl.insertInto(joinTable.table())
                 .set(joinTable.linkedTableId(), photoMeta.getId())

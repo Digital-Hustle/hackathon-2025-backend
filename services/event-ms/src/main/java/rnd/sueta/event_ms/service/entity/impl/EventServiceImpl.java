@@ -11,7 +11,9 @@ import rnd.sueta.event_ms.constants.EventConstants;
 import rnd.sueta.event_ms.enums.EventType;
 import rnd.sueta.event_ms.model.DateTimeRange;
 import rnd.sueta.event_ms.model.EventFilterParams;
+import rnd.sueta.event_ms.model.EventScoreParts;
 import rnd.sueta.event_ms.model.EventWithPlace;
+import rnd.sueta.event_ms.model.ItemWithScore;
 import rnd.sueta.event_ms.model.entity.Event;
 import rnd.sueta.event_ms.model.entity.Point;
 import rnd.sueta.event_ms.repository.EventRepository;
@@ -26,6 +28,11 @@ import java.util.UUID;
 public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
+
+    @Override
+    public List<ItemWithScore<EventWithPlace>> getTopWithScores() {
+        return eventRepository.findTopWithScores();
+    }
 
     @Override
     public Page<EventWithPlace> getAllByFilter(EventFilterParams eventFilterParams) {
@@ -53,6 +60,11 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public EventScoreParts getScorePartsById(UUID id) {
+        return eventRepository.findScoreParts(id);
+    }
+
+    @Override
     public Event create(Event event) {
         return eventRepository.save(
                 event.toBuilder()
@@ -63,12 +75,25 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     @Override
-    public Event update(UUID id, Event event) {
-        return eventRepository.save(
-                event.toBuilder()
-                        .id(id)
-                        .build()
-        );
+    public EventWithPlace update(EventWithPlace event) {
+        Event savedEvent = Event.builder()
+                .id(event.id())
+                .title(event.title())
+                .placeId(event.placeId())
+                .eventStart(event.eventStart())
+                .eventEnd(event.eventEnd())
+                .ageRestriction(event.ageRestriction())
+                .price(event.price())
+                .build();
+
+        eventRepository.save(savedEvent);
+
+        return getEventWithPlaceById(event.id());
+    }
+
+    @Override
+    public void refreshTop() {
+        eventRepository.refreshEvents();
     }
 
     @Override

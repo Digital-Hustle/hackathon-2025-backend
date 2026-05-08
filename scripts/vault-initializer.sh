@@ -1,4 +1,4 @@
-#!/usr/bin/env /bin/sh
+#!/bin/sh
 #set -e
 
 export VAULT_ADDR="http://$VAULT_DEV_LISTEN_ADDRESS"

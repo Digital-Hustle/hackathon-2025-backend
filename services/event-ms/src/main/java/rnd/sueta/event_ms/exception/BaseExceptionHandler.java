@@ -73,6 +73,12 @@ public class BaseExceptionHandler {
         return ExceptionResponseFactory.newBadRequest(exception.getMessage(), clock);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionRs handleIllegalArgumentException(IllegalArgumentException exception) {
+        return ExceptionResponseFactory.newBadRequest(exception.getMessage(), clock);
+    }
+
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ExceptionRs handleEntityNotFoundException(EntityNotFoundException exception) {

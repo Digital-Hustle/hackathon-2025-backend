@@ -12,6 +12,7 @@ import java.util.List;
 
 @Mapper(config = BaseMapperConfig.class)
 public interface PhotoMapper {
+
     @Mapping(target = "url", ignore = true)
     PhotoMetaDto convert(PhotoMeta source);
 

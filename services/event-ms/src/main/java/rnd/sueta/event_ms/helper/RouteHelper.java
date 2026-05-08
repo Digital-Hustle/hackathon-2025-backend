@@ -37,7 +37,7 @@ public final class RouteHelper {
                         RouteEvents.builder()
                                 .id(UUID.randomUUID())
                                 .routeId(routeId)
-                                .eventId(eventWithPlace.eventId())
+                                .eventId(eventWithPlace.id())
                                 .build()
                 )
                 .toList();

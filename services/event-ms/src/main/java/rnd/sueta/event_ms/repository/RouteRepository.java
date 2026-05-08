@@ -33,7 +33,7 @@ public class RouteRepository {
                 .doUpdate()
                 .set(dsl.newRecord(Tables.ROUTES, route))
                 .returning()
-                .fetchOne(jooqRecord -> jooqRecord.into(Route.class));
+                .fetchOneInto(Route.class);
     }
 
     public List<RoutePlaces> saveRoutePlaces(List<RoutePlaces> routePlaces) {

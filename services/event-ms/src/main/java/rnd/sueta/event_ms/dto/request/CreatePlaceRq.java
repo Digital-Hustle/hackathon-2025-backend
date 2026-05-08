@@ -28,7 +28,7 @@ public record CreatePlaceRq(
         @Size(max = PlaceConstants.MAX_ADDRESS_LENGTH, message = "address " + ValidationErrorMessages.STRING_IS_TOO_LONG)
         String address,
 
-        @NotNull(message = "eventType " + ValidationErrorMessages.IS_REQUIRED)
+        @NotNull(message = "type " + ValidationErrorMessages.IS_REQUIRED)
         PlaceType type,
 
         @NotNull(message = "ownerId " + ValidationErrorMessages.IS_REQUIRED)

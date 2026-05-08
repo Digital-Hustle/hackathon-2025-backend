@@ -39,15 +39,10 @@ public class EventReviewRegistratorImpl implements ReviewRegistrator {
 
     @Transactional
     @Override
-    public Review update(UUID ownerId, UUID reviewId, Review review) {
-        Integer oldRate = eventReviewService.getRateById(reviewId);
+    public Review update(UUID ownerId, Review review) {
+        Integer oldRate = eventReviewService.getRateById(review.getId());
 
-        Review updatedReview = eventReviewService.update(
-                ownerId,
-                review.toBuilder()
-                        .id(reviewId)
-                        .build()
-        );
+        Review updatedReview = eventReviewService.update(ownerId, review);
         eventService.updateRating(ownerId, oldRate, updatedReview.getRate());
 
         return updatedReview;

@@ -13,7 +13,7 @@ public interface ReviewRegistrator {
 
     Review register(UUID ownerId, Review review);
 
-    Review update(UUID ownerId, UUID reviewId, Review review);
+    Review update(UUID ownerId, Review review);
 
     void delete(UUID ownerId, UUID reviewId);
 }
