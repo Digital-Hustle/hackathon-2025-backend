@@ -1,10 +1,8 @@
-package ru.zuzex.practice.authms.exception.exception;
+package ru.ci_trainee.authms.exception.exception;
 
-public class ExpiredTokenException extends RuntimeException{
-    public ExpiredTokenException() {
-        super("Token has been expired");
-    }
+import ru.digital_hustle.exceptions_starter.exception.DomainException;
 
+public class ExpiredTokenException extends DomainException {
     public ExpiredTokenException(String message) {
         super(message);
     }

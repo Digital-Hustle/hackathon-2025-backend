@@ -2,8 +2,11 @@
 .todo
 .gradle
 build
-gradle
+gradle/wrapper
+configurations/
 
 **/.env
 **/gradlew
 **/gradlew.bat
+
+vault-cluster-vault-2026-05-13T10_27_01.564Z.json

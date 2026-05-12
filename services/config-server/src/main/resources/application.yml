@@ -7,8 +7,9 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/Digital-Hustle/hackathon-2025-backend
-          search-paths: configurations/{application}
+          uri: https://github.com/Digital-Hustle/sueta-rnd-back-configurations
+          default-label: config/dev
+          search-paths: "{application}"
           order: 1
         vault:
           host: localhost
@@ -19,7 +20,7 @@ spring:
           profile-separator: '/'
           skip-ssl-validation: true
           authentication: TOKEN
-          token: myroot
+          token: ${VAULT_KEY}
           order: 2
 
 server:

@@ -1,10 +1,8 @@
 package ru.ci_trainee.authms.exception.exception;
 
-public class PasswordsDoNotMatchException extends RuntimeException {
-    public PasswordsDoNotMatchException() {
-        super("Passwords do not match");
-    }
+import ru.digital_hustle.exceptions_starter.exception.DomainException;
 
+public class PasswordsDoNotMatchException extends DomainException {
     public PasswordsDoNotMatchException(String message) {
         super(message);
     }

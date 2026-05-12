@@ -3,7 +3,7 @@ stages:
 
 build-services:
   stage: build
-  image: gradle:8.6-jdk21-alpine
+  image: gradle:9-jdk21
   services:
     - name: postgres:latest
       alias: postgres

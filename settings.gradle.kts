@@ -6,3 +6,12 @@ file("services").listFiles()?.forEach { serviceDir ->
         project(":services:${serviceDir.name}").projectDir = file("services/${serviceDir.name}")
     }
 }
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+    versionCatalogs {
+        create("libs")
+    }
+}

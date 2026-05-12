@@ -1,9 +1,36 @@
 spring:
   application:
     name: auth-ms
+
+  mail:
+    host: ${MAIL_HOST:smtp.mail.ru}
+    port: ${MAIL_PORT:465}
+    username: ${MAIL_USERNAME:digital-hustle@mail.ru}
+    password: ${MAIL_PASSWORD}
+    protocol: smtps
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          starttls:
+            enable: false
+
   cloud:
     config:
-      uri: http://localhost:5000
+      uri: ${CONFIG_SERVER_URL:http://localhost:5000}
       fail-fast: true
   config:
     import: "configserver:"
+
+app:
+  domain:
+    auth:
+      token:
+        eviction: ${TOKEN_EVICTION_RATE:0 0 1 * * *}
+        lock-at-most-for: PT5M
+        lock-at-least-for: PT1M
+  paths:
+    url:
+      reset-password: ${RESET_PASSWORD_URL:http://localhost:5001}

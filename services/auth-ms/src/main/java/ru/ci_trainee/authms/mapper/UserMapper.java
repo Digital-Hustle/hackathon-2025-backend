@@ -1,13 +1,21 @@
 package ru.ci_trainee.authms.mapper;
 
 import org.mapstruct.Mapper;
-import ru.ci_trainee.authms.dto.request.UserRegisterRs;
-import ru.ci_trainee.authms.model.User;
+import org.mapstruct.Mapping;
+import ru.ci_trainee.authms.config.BaseMapperConfig;
+import ru.ci_trainee.authms.dto.request.RegisterUserRq;
+import ru.ci_trainee.authms.dto.request.UserLoginRq;
+import ru.ci_trainee.authms.model.UserWithCredentials;
+import ru.ci_trainee.authms.model.entity.User;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = BaseMapperConfig.class)
 public interface UserMapper {
 
-    UserRegisterRs toDto(User user);
+    UserWithCredentials convert(RegisterUserRq registerUserRq);
 
-    User toEntity(UserRegisterRs userRegisterRs);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "isActive", ignore = true)
+    @Mapping(target = "lastLogin", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    User convert(UserLoginRq userLoginRq);
 }
