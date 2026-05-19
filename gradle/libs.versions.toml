@@ -1,0 +1,61 @@
+[versions]
+postgres = "42.6.0"
+liquibase = "4.33.0"
+mapstruct = "1.6.3"
+springdoc = "2.8.13"
+shedlock = "7.6.0"
+shedlockProvider = "7.6.0"
+picocli = "4.7.5"
+lombok-mapstruct-binding = "0.2.0"
+jjwt = "0.12.6"
+
+jackson = "2.19.2"
+mockito = "5.18.0"
+
+spring-boot = "3.5.0"
+spring-cloud = "2025.0.0"
+
+[libraries]
+spring-boot-starter-actuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator" }
+spring-boot-starter-data-jpa = { group = "org.springframework.boot", name = "spring-boot-starter-data-jpa" }
+spring-boot-starter-security = { group = "org.springframework.boot", name = "spring-boot-starter-security" }
+spring-boot-starter-web = { group = "org.springframework.boot", name = "spring-boot-starter-web" }
+spring-boot-starter-validation = { group = "org.springframework.boot", name = "spring-boot-starter-validation" }
+spring-boot-starter-mail = { group = "org.springframework.boot", name = "spring-boot-starter-mail" }
+
+spring-cloud-starter-config = { group = "org.springframework.cloud", name = "spring-cloud-starter-config" }
+
+springdoc = { group = "org.springdoc", name = "springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
+
+jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
+
+shedlock = { group = "net.javacrumbs.shedlock", name = "shedlock-spring", version.ref = "shedlock" }
+shedlock-provider = { group = "net.javacrumbs.shedlock", name = "shedlock-provider-jdbc-template", version.ref = "shedlockProvider" }
+
+micrometer-registry-prometheus = { group = "io.micrometer", name = "micrometer-registry-prometheus" }
+micrometer-core = { group = "io.micrometer", name = "micrometer-core" }
+
+postgresql = { group = "org.postgresql", name = "postgresql", version.ref = "postgres" }
+
+liquibase-core = { group = "org.liquibase", name = "liquibase-core", version.ref = "liquibase" }
+liquibase-commercial = { group = "org.liquibase", name = "liquibase-commercial", version.ref = "liquibase" }
+picocli = { group = "info.picocli", name = "picocli", version = "picocli" }
+
+mapstruct = { group = "org.mapstruct", name = "mapstruct", version.ref = "mapstruct" }
+mapstruct-processor = { group = "org.mapstruct", name = "mapstruct-processor", version.ref = "mapstruct" }
+
+lombok = { group = "org.projectlombok", name = "lombok" }
+lombok-mapstruct-binding = { group = "org.projectlombok", name = "lombok-mapstruct-binding", version.ref = "lombok-mapstruct-binding" }
+
+jjwt-api = { group = "io.jsonwebtoken", name = "jjwt-api", version.ref = "jjwt" }
+jjwt-impl = { group = "io.jsonwebtoken", name = "jjwt-impl", version.ref = "jjwt" }
+jjwt-jackson = { group = "io.jsonwebtoken", name = "jjwt-jackson", version.ref = "jjwt" }
+
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" }
+spring-security-test = { group = "org.springframework.security", name = "spring-security-test" }
+junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher" }
+
+[bundles]
+liquibase-runtime = ["liquibase-core", "liquibase-commercial", "picocli", "postgresql"]
+jwt = ["jjwt-api", "jjwt-impl", "jjwt-jackson"]

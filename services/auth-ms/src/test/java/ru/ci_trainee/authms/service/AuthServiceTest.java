@@ -1,5 +1,6 @@
 package ru.ci_trainee.authms.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,13 +10,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.transaction.annotation.Transactional;
-import ru.ci_trainee.authms.dto.request.UserLoginRs;
-import ru.ci_trainee.authms.dto.response.JwtRs;
-import ru.ci_trainee.authms.exception.exception.UserNotFoundException;
-import ru.ci_trainee.authms.model.User;
-import ru.ci_trainee.authms.security.jwt.JwtTokenProvider;
+import ru.ci_trainee.authms.model.JwtData;
+import ru.ci_trainee.authms.model.entity.User;
+import ru.ci_trainee.authms.service.auth.AuthService;
+import ru.ci_trainee.authms.service.auth.JwtTokenProvider;
 import ru.ci_trainee.authms.service.entity.UserService;
-import ru.ci_trainee.authms.service.logic.AuthService;
 
 import java.util.UUID;
 
@@ -25,6 +24,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceTest {
+
     @Mock
     private AuthenticationManager authenticationManager;
 
@@ -44,24 +44,27 @@ public class AuthServiceTest {
         var userId = UUID.randomUUID();
         var user = User.builder()
                 .id(userId)
-                .username("testuser")
+                .email("testuser@mail.ru")
                 .password("encodedPass")
                 .isActive(true)
                 .build();
 
-        var request = new UserLoginRs("testuser", "password");
-        var expectedResponse = JwtRs.builder()
+        var request = User.builder()
+                .email("testuser")
+                .password("password")
+                .build();
+        var expectedResponse = JwtData.builder()
                 .id(userId)
-                .username("testuser")
+                .email("testuser")
                 .accessToken("accessToken")
                 .refreshToken("refreshToken")
                 .build();
 
         when(userService.getUser("testuser")).thenReturn(user);
-        when(jwtTokenProvider.createAccessToken(user)).thenReturn("accessToken");
+        when(jwtTokenProvider.createAccessToken(user.getId(), user.getEmail())).thenReturn("accessToken");
         when(jwtTokenProvider.createRefreshToken(userId, "testuser")).thenReturn("refreshToken");
 
-        JwtRs actualResponse = authService.login(request);
+        JwtData actualResponse = authService.login(request);
 
         // Assert
         assertThat(actualResponse).isEqualTo(expectedResponse);
@@ -72,23 +75,28 @@ public class AuthServiceTest {
     }
 
     @Test
-    void login_ShouldThrowUserNotFoundException_WhenUserInactive() {
+    void login_ShouldThrowEntityNotFoundException_WhenUserInactive() {
         var inactiveUser = User.builder()
-                .username("inactive")
+                .email("testuser@mail.ru")
                 .isActive(false)
                 .build();
 
         when(userService.getUser("inactive")).thenReturn(inactiveUser);
 
-        assertThatThrownBy(() -> authService.login(new UserLoginRs("inactive", "pass")))
-                .isInstanceOf(UserNotFoundException.class);
+        var user = User.builder()
+                .email("testuser")
+                .password("password")
+                .build();
+
+        assertThatThrownBy(() -> authService.login(user))
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
     void login_ShouldThrowBadCredentials_WhenAuthenticationFails() {
         // Arrange
         User user = User.builder()
-                .username("testuser")
+                .email("testuser@mail.ru")
                 .isActive(true)
                 .build();
 
@@ -96,8 +104,14 @@ public class AuthServiceTest {
         doThrow(new BadCredentialsException("Invalid credentials"))
                 .when(authenticationManager).authenticate(any());
 
+        var userCred = User.builder()
+                .email("testuser")
+                .password("password")
+                .build();
+
+
         // Act & Assert
-        assertThatThrownBy(() -> authService.login(new UserLoginRs("testuser", "wrongpass")))
+        assertThatThrownBy(() -> authService.login(userCred))
                 .isInstanceOf(BadCredentialsException.class)
                 .hasMessage("Invalid credentials");
     }
@@ -107,7 +121,7 @@ public class AuthServiceTest {
     void refresh_ShouldReturnNewTokens_WhenRefreshTokenValid() {
         // Arrange
         String refreshToken = "valid.refresh.token";
-        JwtRs expectedResponse = JwtRs.builder()
+        JwtData expectedResponse = JwtData.builder()
                 .accessToken("newAccess")
                 .refreshToken("newRefresh")
                 .build();
@@ -115,7 +129,7 @@ public class AuthServiceTest {
         when(jwtTokenProvider.refreshUserTokens(refreshToken)).thenReturn(expectedResponse);
 
         // Act
-        JwtRs actualResponse = authService.refresh(refreshToken);
+        JwtData actualResponse = authService.refreshTokens(refreshToken);
 
         // Assert
         assertThat(actualResponse).isEqualTo(expectedResponse);

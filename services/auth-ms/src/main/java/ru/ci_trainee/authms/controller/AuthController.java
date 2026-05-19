@@ -2,25 +2,22 @@ package ru.ci_trainee.authms.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.RequiredArgsConstructor;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import ru.ci_trainee.authms.constants.ApiVersionConstants;
+import ru.ci_trainee.authms.constants.UrlPaths;
+import ru.ci_trainee.authms.dto.request.RegisterUserRq;
+import ru.ci_trainee.authms.dto.request.ResetPasswordRq;
 import ru.ci_trainee.authms.dto.request.UserLoginRq;
-import ru.ci_trainee.authms.dto.request.UserRegisterRs;
-import ru.ci_trainee.authms.dto.response.JwtRs;
-import ru.ci_trainee.authms.mapper.UserMapper;
-import ru.ci_trainee.authms.service.logic.AuthService;
-import ru.ci_trainee.authms.validation.OnCreate;
 
-@RestController
-@RequestMapping("api/v1/auth")
-@RequiredArgsConstructor
-public class AuthController {
-    private final AuthService authService;
-    private final UserMapper userMapper;
+@RequestMapping(UrlPaths.AUTH)
+public interface AuthController {
 
-    @PostMapping("/login")
     @Operation(
             summary = "Login user",
             responses = {
@@ -29,36 +26,55 @@ public class AuthController {
                     @ApiResponse(responseCode = "404", description = "User not found")
             }
     )
-    public JwtRs login(@RequestBody @Validated UserLoginRq loginRequest) {
-        return authService.login(loginRequest);
-    }
+    @PostMapping(value = UrlPaths.LOGIN, version = ApiVersionConstants.VERSION_1)
+    void login(@RequestBody @Valid UserLoginRq loginRequest, HttpServletResponse response);
 
-    @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
     @Operation(
             summary = "Register user",
             responses = {
                     @ApiResponse(responseCode = "201", description = "New user created"),
-                    @ApiResponse(responseCode = "400", description = "Validation failed"),
-                    @ApiResponse(responseCode = "400", description = "Passwords mismatch"),
-                    @ApiResponse(responseCode = "400", description = "Id should not be specified")
+                    @ApiResponse(responseCode = "400", description = "Validation failed")
             }
     )
-    public UserRegisterRs register(@RequestBody @Validated(OnCreate.class) UserRegisterRs userRegisterRs) {
-        var user = userMapper.toEntity(userRegisterRs);
-        userRegisterRs = userMapper.toDto(authService.register(user, userRegisterRs.getPasswordConfirmation()));
-
-        return userRegisterRs;
-    }
+    @PostMapping(value = UrlPaths.REGISTER, version = ApiVersionConstants.VERSION_1)
+    @ResponseStatus(HttpStatus.CREATED)
+    void register(@RequestBody @Valid RegisterUserRq registerUserRq);
 
     @Operation(
-            summary = "Refresh tokens",
+            summary = "Refresh access token",
             responses = {
                     @ApiResponse(responseCode = "200", description = "New tokens")
             }
     )
-    @PostMapping("/refresh")
-    public JwtRs refresh(@RequestBody String refreshToken) {
-        return authService.refresh(refreshToken);
-    }
+    @PostMapping(value = UrlPaths.TOKENS_ACCESS, version = ApiVersionConstants.VERSION_1)
+    void refreshAccess(@RequestBody String refreshToken, HttpServletResponse response);
+
+    @Operation(
+            summary = "Refresh both access and refresh tokens",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "New tokens")
+            }
+    )
+    @PostMapping(value = UrlPaths.TOKENS_BOTH, version = ApiVersionConstants.VERSION_1)
+    void refreshBothTokens(@RequestBody String refreshToken, HttpServletResponse response);
+
+    @Operation(
+            summary = "Request password reset",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Send email for password reset")
+            }
+    )
+    @PostMapping(value = UrlPaths.PASSWORD_RESET, version = ApiVersionConstants.VERSION_1)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void requestPasswordReset(@RequestBody String email);
+
+    @Operation(
+            summary = "Reset password",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Reset password")
+            }
+    )
+    @PostMapping(value = UrlPaths.PASSWORD_RESET_CONFIRMATION, version = ApiVersionConstants.VERSION_1)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void resetPassword(@RequestBody ResetPasswordRq resetPasswordRq);
 }

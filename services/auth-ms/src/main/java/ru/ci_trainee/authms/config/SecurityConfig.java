@@ -1,15 +1,11 @@
 package ru.ci_trainee.authms.config;
 
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,21 +15,23 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import ru.ci_trainee.authms.security.jwt.JwtTokenFilter;
-import ru.ci_trainee.authms.security.jwt.JwtTokenProvider;
+import ru.ci_trainee.authms.constants.UrlPaths;
+import ru.ci_trainee.authms.filter.JwtTokenFilter;
+import ru.ci_trainee.authms.service.auth.JwtCookieManager;
+import ru.ci_trainee.authms.service.auth.JwtTokenProvider;
 
-import java.util.Arrays;
+import java.util.List;
 
 @Configuration
-@EnableWebSecurity
-@EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-    @Lazy
-    private final JwtTokenProvider jwtTokenProvider;
 
-    public SecurityConfig(@Lazy JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+    private static final String SINGLE_STAR = "*";
+    private static final String DOUBLE_STAR_PATH = "/**";
+    private static final String API_VERSION_AUTH = UrlPaths.API_VERSION + UrlPaths.AUTH;
+
+    private final JwtCookieManager cookieManager;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -55,40 +53,33 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-//                .exceptionHandling(configurer -> configurer
-//                        .authenticationEntryPoint(
-//                                (request, response, exception) -> {
-//                                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
-//                                    response.getWriter().write("Unauthorized.");
-//                                }
-//                        )
-//                        .accessDeniedHandler(
-//                                (request, response, exception) -> {
-//                                    response.setStatus(HttpStatus.FORBIDDEN.value());
-//                                    response.getWriter().write("Forbidden.");
-//                                }
-//                        )
-//                )
                 .authorizeHttpRequests(configurer -> configurer
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers(API_VERSION_AUTH + DOUBLE_STAR_PATH).permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider, cookieManager), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://192.168.180.117:3000", "http://192.168.180.250:3000", "http://localhost:8081", "http://172.20.10.2:3000", "http://172.20.10.2:8080", "http://155.212.128.222", "https://155.212.128.222", "http://digital-hustle.ru", "https://digital-hustle.ru", "http://localhost:8080", "null", "http://172.17.0.1:8080", "http://127.0.0.1:8080", "http://localhost", "http://155.212.128.222:80", "http://155.212.128.222:8080", "https://155.212.128.222:80", "https://155.212.128.222:8080"));
-        configuration.addAllowedMethod("*");
-        configuration.addAllowedHeader("*");
+        final var corsAllowedPaths = List.of(
+                "http://localhost:3000",
+                "http://digital-hustle.ru",
+                "https://digital-hustle.ru"
+        );
+
+        var configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(corsAllowedPaths);
+        configuration.addAllowedMethod(SINGLE_STAR);
+        configuration.addAllowedHeader(SINGLE_STAR);
         configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+
+        var source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration(DOUBLE_STAR_PATH, configuration);
         return source;
     }
 }

@@ -1,16 +1,14 @@
 package ru.ci_trainee.authms.dto.request;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import ru.ci_trainee.authms.constants.ErrorMessages;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserLoginRq {
-    @NotNull(message = "Username must be not null")
-    private String username;
-    @NotNull(message = "Password must be not null")
-    private String password;
+public record UserLoginRq(
+
+        @NotBlank(message = "email" + ErrorMessages.IS_REQUIRED)
+        String email,
+
+        @NotBlank(message = "password" + ErrorMessages.IS_REQUIRED)
+        String password
+) {
 }
