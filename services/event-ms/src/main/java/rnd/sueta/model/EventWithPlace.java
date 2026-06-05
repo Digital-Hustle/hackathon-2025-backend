@@ -1,0 +1,41 @@
+package rnd.sueta.model;
+
+import lombok.Builder;
+import rnd.sueta.enums.EventType;
+
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.UUID;
+
+@Builder(toBuilder = true)
+public record EventWithPlace(
+
+        UUID id,
+
+        UUID placeId,
+
+        UUID organizerId,
+
+        BigDecimal latitude,
+
+        BigDecimal longitude,
+
+        String title,
+
+        EventType type,
+
+        Integer totalRating,
+
+        Integer reviewsAmount,
+
+        BigDecimal averageRating,
+
+        OffsetDateTime eventStart,
+
+        OffsetDateTime eventEnd,
+
+        BigDecimal price,
+
+        Integer ageRestriction
+) {
+}

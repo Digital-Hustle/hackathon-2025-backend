@@ -1,0 +1,39 @@
+package rnd.sueta.dto;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
+import rnd.sueta.enums.EventType;
+
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.UUID;
+
+@Builder(toBuilder = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public record EventWithPlaceDto(
+
+        UUID id,
+
+        UUID placeId,
+
+        UUID organizerId,
+
+        BigDecimal latitude,
+
+        BigDecimal longitude,
+
+        String title,
+
+        EventType type,
+
+        BigDecimal averageRating,
+
+        OffsetDateTime eventStart,
+
+        OffsetDateTime eventEnd,
+
+        BigDecimal price,
+
+        Integer ageRestriction
+) {
+}
