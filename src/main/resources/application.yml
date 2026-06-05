@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: sueta-rnd
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+
+  mail:
+    host: ${MAIL_HOST:smtp.mail.ru}
+    port: ${MAIL_PORT:465}
+    username: ${MAIL_USERNAME:digital-hustle@mail.ru}
+    password: ${MAIL_PASSWORD}
+    protocol: smtps
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          starttls:
+            enable: false
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+app:
+  domain:
+    auth:
+      token:
+        eviction: ${TOKEN_EVICTION_RATE:0 0 1 * * *}
+        lock-at-most-for: PT5M
+        lock-at-least-for: PT1M
+    recommendation:
+      place-rate: ${RECOMMENDATION_RATE:0 0 1 * * *}
+      event-rate: ${RECOMMENDATION_RATE:0 0 1 * * *}
+    city:
+      coordinates:
+        bottom-left-corner:
+          latitude: 47.20000
+          longitude: 39.55555
+        top-left-corner:
+          latitude: 47.30600
+          longitude: 39.55555
+        bottom-right-corner:
+          latitude: 47.20000
+          longitude: 39.90500
+        top-right-corner:
+          latitude: 47.30600
+          longitude: 39.90500
+  paths:
+    url:
+      reset-password: ${RESET_PASSWORD_URL:http://localhost:5001}
+
+minio:
+  endpoint: http://${MINIO_HOST}:${MINIO_PORT}
+  access-key: ${MINIO_ACCESS_KEY}
+  secret-key: ${MINIO_SECRET_KEY}
+  bucket-name: ${MINIO_BUCKET_NAME}
+
+server:
+  port: 8080
